@@ -15,7 +15,7 @@ const unsigned char GEN = 13; //global enable -- OUTPUT,NO_OUTPUT = 1,0
 const unsigned char EXT_AGND = 19; //external AGND enable -- INTERNAL,EXTERNAL = 0,1
 const unsigned char RST_L = 26; //low active reset -- ensures one-shot works properly.
 
-unsigned int iter; //loop variable
+int iter; //loop variable
 unsigned char STB_STATE = 0; //flag to keep track of state of STB
 
 void d_latch(char bits);
@@ -91,7 +91,7 @@ void d_latch(char bits)
 		exit(1);
 	}
 
-	for(iter = 0; iter < DATA_BITS; iter++)
+	for(iter = DATA_BITS-1; iter > 0; iter--)
 	{
 		digitalWrite(DATA[iter], bits & 1);
 		bits = bits >> 1;
@@ -116,13 +116,13 @@ void am_latch(char bits)
 		exit(1);
 	}
 
-	for(iter = 0; iter < MODE_BITS; iter++)
+	for(iter = MODE_BITS-1; iter > 0; iter--)
 	{
 		digitalWrite(MODE[iter], bits & 1);
 		bits = bits >> 1;
 	}
 
-	for(iter = 0; iter < ADDR_BITS; iter++)
+	for(iter = ADDR_BITS-1; iter > 0; iter--)
 	{
 		digitalWrite(ADDR[iter], bits & 1);
 		bits = bits >> 1;
