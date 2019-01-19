@@ -5,14 +5,14 @@
 #include "cfd.h"
 
 /* Pin accessors */
-const unsigned char DATA[8] = {2,3,4,17,27,22,10,9}; //data bus -- used to load configuration registers
-const unsigned char ADDR[4] = {2,3,4,17}; //address bus -- just an alias of the upper nibble of the data bus
-const unsigned char MODE[4] = {27,22,10,9}; //mode bus -- just an alias of the lower nibble of the data bus
+const unsigned char DATA[8] = {21,22,23,24,25,27,28,29}; //data bus -- used to load configuration registers
+const unsigned char ADDR[4] = {21,22,23,24}; //address bus -- just an alias of the upper nibble of the data bus
+const unsigned char MODE[4] = {25,27,28,29}; //mode bus -- just an alias of the lower nibble of the data bus
 const unsigned char NEG_POL = 11; //negative polarity enable -- POS,NEG = 0,1
 const unsigned char BUS_DIR = 5; //bidirectional bus control -- IN,OUT = 1,0
 const unsigned char STB = 6; //data/address strobe -- addr/mode latched on rising edge, data latched on falling edge
 const unsigned char GEN = 13; //global enable -- OUTPUT,NO_OUTPUT = 1,0
-const unsigned char EXT_AGND = 19; //external AGND enable -- INTERNAL,EXTERNAL = 0,1
+const unsigned char EXT_AGND = 4; //external AGND enable -- INTERNAL,EXTERNAL = 0,1
 const unsigned char RST_L = 26; //low active reset -- ensures one-shot works properly.
 
 int iter; //loop variable
@@ -104,7 +104,7 @@ void d_latch(char bits)
 
 /* Address & mode latch -- Address & mode are latched on the rising edge of STB using the shared ADDRDAT bus.
  * char bits: an 8-bit number representing address and mode. The upper nibble of the byte will be the address
- * while the lower niblle of the byte is the mode. (addr: selects channel to load data to, mode: selects 
+ * while the lower nibble of the byte is the mode. (addr: selects channel to load data to, mode: selects 
  * register in the channel to load data to, common channel address = 0). MSB of mode is GMODE which causes
  * address to be ignored, selecting ALL registers of a given mode (useful for loading channel DACs).
  */
@@ -138,7 +138,7 @@ void clear_all(void)
 	//todo: clear all registers to 0
 }
 
-/* Helpher function for python GUI to change control pins
+/* Helper function for python GUI to change control pins
  * char pin: the GPIO pin number whose state will be changed.
  * char state: the state the pin will be changed to.
  */
