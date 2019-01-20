@@ -218,7 +218,7 @@ void set_ctl_pin(char pin, char state)
  * token 3: Only used if token 1 was "ctl". This should be the to which you wish to change the state 
  *	    of the control signal pin indicated by token 2. Must be 0 or 1.
  */
-void read_files(char* file_name)
+void read_file(char* file_name)
 {
 	ssize_t bytes;
 	FILE* fid = fopen(file_name, "r");
