@@ -68,12 +68,13 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 
-	while((c = getopt(argc, argv, "f:a:d:p:s:C")) != -1)
+	while((c = getopt(argc, argv, ":f:a:d:p:s:C")) != -1)
 	{
 		switch(c)
 		{
 			case 'f':
 				fn = optarg;
+				printf("Filename: %s\n", fn);
 				read_file(fn);
 				break;
 			case 'a':
@@ -221,13 +222,14 @@ void set_ctl_pin(char pin, char state)
 void read_file(char* file_name)
 {
 	ssize_t bytes;
+	printf("File function received: %s\n", file_name);
 	FILE* fid = fopen(file_name, "r");
 	char* line = NULL;	
 	size_t len = 0;
 
-	if(!fid)
+	if(fid == NULL)
 	{
-		printf("Could not open file. Please make sure file exists!\n");
+		fprintf(stderr,"Could not open file. Please make sure file exists!\n");
 		exit(2);
 	}
 
@@ -244,13 +246,13 @@ void read_file(char* file_name)
 			char num = 0;
 			for(iter = 0; iter < DATA_BITS; iter++)
 			{
-				num |= (t2[iter]-48) & 1;
+				num = (char)atoi(t2+iter);
 				num = num << 1;
 			}
 		
 			am_latch(num);
 			free(tmp);
-			free((char*)t2);
+			//free((char*)t2);
 		}
 		else if(strncmp(t, "d", 8) == 0)
 		{
@@ -259,13 +261,13 @@ void read_file(char* file_name)
 			char num = 0;
 			for(iter = 0; iter < DATA_BITS; iter++)
 			{
-				num |= (t2[iter]-48) & 1;
+				num = (char)atoi(t2+iter);
 				num = num << 1;
 			}
 		
 			d_latch(num);
 			free(tmp);
-			free((char*)t2);
+			//free((char*)t2);
 		}
 		else if(strncmp(t, "ctl", 8) == 0)
 		{
