@@ -1,0 +1,302 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="main_window">
+    <property name="borderwidth">5</property>
+    <property name="height">600</property>
+    <property name="maxsize">800|600</property>
+    <property name="minsize">800|600</property>
+    <property name="overrideredirect">False</property>
+    <property name="resizable">none</property>
+    <property name="takefocus">true</property>
+    <property name="title" translatable="yes">CFD Configuration</property>
+    <property name="width">800</property>
+    <child>
+      <object class="ttk.Labelframe" id="globals_frame">
+        <property name="borderwidth">5</property>
+        <property name="height">200</property>
+        <property name="labelanchor">n</property>
+        <property name="relief">flat</property>
+        <property name="takefocus">true</property>
+        <property name="text" translatable="yes">Global Controls</property>
+        <property name="width">800</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">n</property>
+        </layout>
+        <child>
+          <object class="ttk.Checkbutton" id="gen_box">
+            <property name="command">gen_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Global Enable</property>
+            <property name="variable">int:gen</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="pady">10</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="global_mode_box">
+            <property name="command">gmode_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Global Mode</property>
+            <property name="variable">int:gmode</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="pady">10</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="neg_pol_box">
+            <property name="command">neg_pol_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Negative Polarity</property>
+            <property name="variable">int:neg_pol</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="padx">10</property>
+              <property name="pady">10</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="agnd_box">
+            <property name="command">agnd_callback</property>
+            <property name="offvalue">1</property>
+            <property name="onvalue">0</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Internal AGND Enable</property>
+            <property name="variable">int:ext_agnd</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">10</property>
+              <property name="pady">10</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="pcap_label">
+            <property name="anchor">w</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Prog. Capacitor</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="pady">10</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="nowlin_mode_label">
+            <property name="anchor">w</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Nowlin Mode</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="test_point_label">
+            <property name="anchor">w</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Test Point</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="nowlin_mode_box">
+            <property name="exportselection">true</property>
+            <property name="justify">left</property>
+            <property name="postcommand">nowlin_mode_callback</property>
+            <property name="state">readonly</property>
+            <property name="takefocus">true</property>
+            <property name="textvariable">string:nowlin_mode</property>
+            <property name="values">"short" "long"</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="pcap_box">
+            <property name="exportselection">false</property>
+            <property name="justify">left</property>
+            <property name="postcommand">pcap_callback</property>
+            <property name="state">disabled</property>
+            <property name="takefocus">true</property>
+            <property name="textvariable">string:pcap_val</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="test_point_box">
+            <property name="exportselection">true</property>
+            <property name="justify">left</property>
+            <property name="postcommand">test_point_callback</property>
+            <property name="state">readonly</property>
+            <property name="takefocus">true</property>
+            <property name="textvariable">string:tp_selection</property>
+            <property name="values">"AVSS" "Lockout Pulse" "Leading Edge Detector" "Oneshot Trigger" "Zero Crossing Detector"</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="lockout_mode_label">
+            <property name="anchor">w</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Lockout Mode</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="lockout_dac_label">
+            <property name="anchor">w</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Lockout DAC</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="Label_3">
+            <property name="anchor">w</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">AGND Trim</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="lockout_mode_box">
+            <layout>
+              <property name="column">3</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="agnd_trim_box">
+            <layout>
+              <property name="column">3</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="lockout_dac_box">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="textvariable">string:lockout_dac_val</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">lockout_dac_callback</property>
+            <property name="width">23</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Labelframe" id="channel_frame">
+        <property name="borderwidth">5</property>
+        <property name="height">200</property>
+        <property name="labelanchor">n</property>
+        <property name="takefocus">true</property>
+        <property name="text" translatable="yes">Per Channel Settings</property>
+        <property name="width">558</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+          <property name="sticky">w</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>
