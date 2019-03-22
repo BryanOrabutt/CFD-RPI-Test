@@ -2,14 +2,10 @@
 <interface>
   <object class="tk.Toplevel" id="main_window">
     <property name="borderwidth">5</property>
-    <property name="height">600</property>
-    <property name="maxsize">800|600</property>
-    <property name="minsize">800|600</property>
     <property name="overrideredirect">False</property>
     <property name="resizable">none</property>
     <property name="takefocus">true</property>
     <property name="title" translatable="yes">CFD Configuration</property>
-    <property name="width">800</property>
     <child>
       <object class="ttk.Labelframe" id="globals_frame">
         <property name="borderwidth">5</property>
@@ -150,10 +146,11 @@
           <object class="ttk.Combobox" id="nowlin_mode_box">
             <property name="exportselection">true</property>
             <property name="justify">left</property>
-            <property name="postcommand">nowlin_mode_callback</property>
             <property name="state">readonly</property>
             <property name="takefocus">true</property>
             <property name="textvariable">string:nowlin_mode</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">nowlin_mode_callback</property>
             <property name="values">"short" "long"</property>
             <layout>
               <property name="column">1</property>
@@ -166,10 +163,11 @@
           <object class="ttk.Combobox" id="pcap_box">
             <property name="exportselection">false</property>
             <property name="justify">left</property>
-            <property name="postcommand">pcap_callback</property>
             <property name="state">disabled</property>
             <property name="takefocus">true</property>
             <property name="textvariable">string:pcap_val</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">pcap_callback</property>
             <layout>
               <property name="column">1</property>
               <property name="propagate">True</property>
@@ -181,10 +179,11 @@
           <object class="ttk.Combobox" id="test_point_box">
             <property name="exportselection">true</property>
             <property name="justify">left</property>
-            <property name="postcommand">test_point_callback</property>
             <property name="state">readonly</property>
             <property name="takefocus">true</property>
             <property name="textvariable">string:tp_selection</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">test_point_callback</property>
             <property name="values">"AVSS" "Lockout Pulse" "Leading Edge Detector" "Oneshot Trigger" "Zero Crossing Detector"</property>
             <layout>
               <property name="column">1</property>
@@ -226,7 +225,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Label" id="Label_3">
+          <object class="ttk.Label" id="agnd_trim_label">
             <property name="anchor">w</property>
             <property name="font">TkDefaultFont</property>
             <property name="justify">left</property>
@@ -243,6 +242,14 @@
         </child>
         <child>
           <object class="ttk.Combobox" id="lockout_mode_box">
+            <property name="exportselection">true</property>
+            <property name="justify">left</property>
+            <property name="state">readonly</property>
+            <property name="takefocus">true</property>
+            <property name="textvariable">string:lockout_mode</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">lockout_mode_callback</property>
+            <property name="values">"Disabled" "Short" "Long"</property>
             <layout>
               <property name="column">3</property>
               <property name="propagate">True</property>
@@ -253,6 +260,14 @@
         </child>
         <child>
           <object class="ttk.Combobox" id="agnd_trim_box">
+            <property name="exportselection">true</property>
+            <property name="justify">left</property>
+            <property name="state">readonly</property>
+            <property name="takefocus">true</property>
+            <property name="textvariable">string:agnd_trim</property>
+            <property name="validate">key</property>
+            <property name="validatecommand">agnd_trim_callback</property>
+            <property name="values">"1.36 V" "1.43 V" "1.49 V" "1.56 V" "1.63 V" "1.69 V" "1.77 V" "1.84 V"</property>
             <layout>
               <property name="column">3</property>
               <property name="propagate">True</property>
@@ -266,9 +281,10 @@
             <property name="exportselection">true</property>
             <property name="font">TkDefaultFont</property>
             <property name="justify">left</property>
-            <property name="state">normal</property>
+            <property name="state">readonly</property>
             <property name="takefocus">true</property>
-            <property name="textvariable">string:lockout_dac_val</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:lockout_dac_val</property>
             <property name="validate">all</property>
             <property name="validatecommand">lockout_dac_callback</property>
             <property name="width">23</property>
@@ -294,8 +310,1063 @@
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">1</property>
-          <property name="sticky">w</property>
         </layout>
+        <child>
+          <object class="ttk.Label" id="channel0_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 0</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel1_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 1</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel2_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 2</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel3_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 3</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel5_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 5</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">5</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel6_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 6</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">6</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel7_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 7</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">7</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel8_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 8</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">8</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel9_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 9</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">9</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel10_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 10</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">10</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel11_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 11</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">11</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel12_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 12</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">12</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel13_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 13</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">13</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel14_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 14</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">14</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel15_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 15</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">15</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_0">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[0]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_1">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[1]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_2">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[2]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_4">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[4]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_5">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[5]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">5</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_6">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[6]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">6</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_7">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[7]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">7</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_8">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[8]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">8</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_9">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[9]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">9</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_10">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[10]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">10</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_11">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[11]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">11</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_12">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[12]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">12</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_13">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[13]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">13</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_14">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[14]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">14</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_15">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[15]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">15</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_0">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_1">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_2">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_3">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_4">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_5">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">5</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_6">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">6</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_7">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">7</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_8">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">8</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_9">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">9</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_10">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">10</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_11">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">11</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_12">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">12</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_13">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">13</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_14">
+            <property name="anchor">w</property>
+            <property name="compound">top</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">14</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel_dac_label_15">
+            <property name="anchor">w</property>
+            <property name="compound">bottom</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Leading Edge DAC</property>
+            <layout>
+              <property name="column">3</property>
+              <property name="padx">5</property>
+              <property name="propagate">True</property>
+              <property name="row">15</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="channel4_label">
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Channel 4</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="channel_checkbox_4">
+            <property name="command">channel_en_callback</property>
+            <property name="offvalue">0</property>
+            <property name="onvalue">1</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">Enable</property>
+            <property name="variable">int:channel_en[4]</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_0">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[0]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_1">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[1]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_2">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[2]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_3">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[3]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_4">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[4]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_5">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[5]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">5</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_6">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[6]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">6</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_7">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[7]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">7</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_8">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[8]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">8</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_9">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[9]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">9</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_10">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[10]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">10</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_11">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[11]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">11</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_12">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[12]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">12</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_13">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[13]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">13</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_14">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[14]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">14</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="channel_dac_box_15">
+            <property name="exportselection">true</property>
+            <property name="font">TkDefaultFont</property>
+            <property name="justify">left</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">0x00</property>
+            <property name="textvariable">int:channel_dac[15]</property>
+            <property name="validate">all</property>
+            <property name="validatecommand">channel_dac_callback</property>
+            <layout>
+              <property name="column">4</property>
+              <property name="padx">10</property>
+              <property name="propagate">True</property>
+              <property name="row">15</property>
+            </layout>
+          </object>
+        </child>
       </object>
     </child>
   </object>
