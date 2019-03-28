@@ -1,17 +1,25 @@
-import tkinter as tk
+try:
+    import tkinter as tk  # for python 3
+except:
+    import Tkinter as tk  # for python 2
+import pygubu
 
 
-master = tk.Tk()
+class Application:
+    def __init__(self, master):
 
-#w = tk.Canvas(master, width=40, height=60)
-#w.grid(row=0,column=0)
+        #1: Create a builder
+        self.builder = builder = pygubu.Builder()
 
-button = tk.Button(master, text='Stop', width=25, command=master.destroy)
-button.grid(row=1, column=0, columnspan=2)
+        #2: Load an ui file
+        builder.add_from_file('pygubu_gui.ui')
 
-var1 = tk.IntVar()
-tk.Checkbutton(master, text='male', variable=var1).grid(row=0,column=0)
-var2 = tk.IntVar()
-tk.Checkbutton(master, text='female', variable=var2).grid(row=0,column=1)
+        #3: Create the widget using a master as parent
+        self.mainwindow = builder.get_object('main_window', master)
 
-master.mainloop()
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    app = Application(root)
+    root.withdraw()
+    root.mainloop()
