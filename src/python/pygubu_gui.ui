@@ -1047,7 +1047,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="channel_checkbox_4">
+          <object class="ttk.Checkbutton" id="channel_checkbox_4_1">
             <property name="command">channel_en_callback</property>
             <property name="offvalue">0</property>
             <property name="onvalue">1</property>
@@ -1367,6 +1367,20 @@
             </layout>
           </object>
         </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Button" id="config_button">
+        <property name="command">config_callback</property>
+        <property name="default">normal</property>
+        <property name="state">normal</property>
+        <property name="takefocus">true</property>
+        <property name="text" translatable="yes">Configure Chip</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">2</property>
+        </layout>
       </object>
     </child>
   </object>
