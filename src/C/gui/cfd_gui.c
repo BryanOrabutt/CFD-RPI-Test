@@ -85,7 +85,12 @@ void Nowlin_Mode_Menu_changed_cb()
 
 void on_Nowlin_Delay_Menu_changed()
 {
-	printf("Nowlin delay menu changed\n");
+	printf("Nowlin delay menu changed\t");
+	GtkComboBox* box = Lockout_Mode_Menu_h;
+	gchar* act_id = gtk_combo_box_get_active_id(box);
+
+	printf("active id: %s\n", act_id);
+
 }
 
 void on_Test_Point_Menu_changed()
@@ -382,20 +387,20 @@ void on_window_main_destroy()
 
 int main(int argc, char *argv[])
 {
-    GtkBuilder      *builder; 
+    GtkBuilder      *builder;
     GtkWidget       *window;
- 
+
     gtk_init(&argc, &argv);
- 
+
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "CFD.glade", NULL);
- 
+
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
-    
+
 	GEN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "GEN_CB"));
 	GMode_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "GMode_CB"));
 	Neg_Pol_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Neg_Pol_CB"));
-	Internal_AGND_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Internal_AGND_CB")); 
+	Internal_AGND_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Internal_AGND_CB"));
 
 	Nowlin_Mode_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "Nowlin_Mode_Menu"));
 	Nowlin_Delay_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "Nowlin_Delay_Menu"));
@@ -456,14 +461,13 @@ int main(int argc, char *argv[])
 
     gtk_builder_connect_signals(builder, NULL);
     printf("connect returned\n");
-    
+
     g_object_unref(builder);
     printf("unref returned\n");
- 
-    gtk_widget_show(window);                
+
+    gtk_widget_show(window);
     printf("show returned\n");
     gtk_main();
- 
+
     return 0;
 }
-
