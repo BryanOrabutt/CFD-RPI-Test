@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 
 /* Setup GTK Object handles for each widget */
 
@@ -78,19 +79,36 @@ void on_Internal_AGND_CB_toggled()
 	printf("Internal AGND toggled\n");
 }
 
-void Nowlin_Mode_Menu_changed_cb()
+void on_Nowlin_Mode_Menu_changed()
 {
-	printf("Nowlin mode menu changed\n");
+	printf("Nowlin mode menu changed\t");
+	GtkComboBoxText* delaybox = GTK_COMBO_BOX_TEXT(Nowlin_Delay_Menu_h);
+	GtkComboBoxText* modebox = GTK_COMBO_BOX_TEXT(Nowlin_Mode_Menu_h);
+	
+	gchar* mode = gtk_combo_box_text_get_active_text(modebox);
+	g_printf("%s\n", mode);
+
+	gtk_combo_box_text_remove_all(delaybox);
+
+	gchar* tmp = "Short";
+	int scale = 1;
+
+	if(g_strcmp0(tmp, mode) != 0)
+		scale = 12;
+
+	for(int i = 0; i < 16; i++)
+	{
+		gchar str[4];
+		g_snprintf(str, 4, "%d", (i+1)*scale);
+		gtk_combo_box_text_append_text(delaybox, str);
+	}	
+
+
 }
 
 void on_Nowlin_Delay_Menu_changed()
 {
-	printf("Nowlin delay menu changed\t");
-	GtkComboBox* box = Lockout_Mode_Menu_h;
-	gchar* act_id = gtk_combo_box_get_active_id(box);
-
-	printf("active id: %s\n", act_id);
-
+	printf("Nowlin delay menu changed\n");
 }
 
 void on_Test_Point_Menu_changed()
@@ -98,7 +116,7 @@ void on_Test_Point_Menu_changed()
 	printf("Test point menu changed\n");
 }
 
-void Lockout_Mode_Menu_changed_cb()
+void on_Lockout_Mode_Menu_changed()
 {
 	printf("Lockout mode menu changed\n");
 }

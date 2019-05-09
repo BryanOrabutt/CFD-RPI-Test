@@ -103,137 +103,14 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-apply</property>
   </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-floppy</property>
+  </object>
   <object class="GtkEntryBuffer" id="lockout_dac">
     <signal name="deleted-text" handler="on_lockout_dac_deleted_text" swapped="no"/>
     <signal name="inserted-text" handler="on_lockout_dac_inserted_text" swapped="no"/>
-  </object>
-  <object class="GtkListStore" id="lockout_mode_list">
-    <columns>
-      <!-- column-name lockout_modes -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Disabled</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Short</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Long</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="nowlin_delay_list">
-    <columns>
-      <!-- column-name short_vals -->
-      <column type="gchararray"/>
-      <!-- column-name long_vals -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">1</col>
-        <col id="1" translatable="yes">12</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">2</col>
-        <col id="1" translatable="yes">24</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">3</col>
-        <col id="1" translatable="yes">36</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">4</col>
-        <col id="1" translatable="yes">48</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">5</col>
-        <col id="1" translatable="yes">60</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">6</col>
-        <col id="1" translatable="yes">72</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">7</col>
-        <col id="1" translatable="yes">84</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">8</col>
-        <col id="1" translatable="yes">96</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">9</col>
-        <col id="1" translatable="yes">108</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">10</col>
-        <col id="1" translatable="yes">120</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">11</col>
-        <col id="1" translatable="yes">132</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">12</col>
-        <col id="1" translatable="yes">144</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">13</col>
-        <col id="1" translatable="yes">156</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">14</col>
-        <col id="1" translatable="yes">168</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">15</col>
-        <col id="1" translatable="yes">180</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">16</col>
-        <col id="1" translatable="yes">192</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="nowlin_mode_list">
-    <columns>
-      <!-- column-name nowlin_short_str -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes" context="&#10;">Short</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Long</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="test_point_list">
-    <columns>
-      <!-- column-name test_point_values -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">AVSS</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Lockout Pulse</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Leading Edge Detector</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Zero Crossing Detector</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Oneshot Trigger</col>
-      </row>
-    </data>
   </object>
   <object class="GtkWindow" id="window_main">
     <property name="can_focus">False</property>
@@ -342,29 +219,22 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="Nowlin_Mode_Menu">
+              <object class="GtkComboBoxText" id="Nowlin_Mode_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="model">nowlin_mode_list</property>
+                <property name="margin_left">26</property>
+                <property name="margin_right">10</property>
                 <property name="active">0</property>
-                <property name="button_sensitivity">on</property>
-                <property name="has_entry">True</property>
-                <property name="entry_text_column">0</property>
-                <property name="active_id">0</property>
-                <signal name="changed" handler="Nowlin_Mode_Menu_changed_cb" swapped="no"/>
-                <child internal-child="entry">
-                  <object class="GtkEntry">
-                    <property name="can_focus">False</property>
-                    <property name="editable">False</property>
-                    <property name="text" translatable="yes">Short</property>
-                    <property name="caps_lock_warning">False</property>
-                  </object>
-                </child>
+                <property name="active_id">nowlin_mode_short</property>
+                <items>
+                  <item id="nowlin_mode_short" translatable="yes">Short</item>
+                  <item id="nowlin_mode_long" translatable="yes">Long</item>
+                </items>
+                <signal name="changed" handler="on_Nowlin_Mode_Menu_changed" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="padding">24</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -382,29 +252,20 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="Lockout_Mode_Menu">
+              <object class="GtkComboBoxText" id="Lockout_Mode_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="model">lockout_mode_list</property>
                 <property name="active">0</property>
-                <property name="button_sensitivity">on</property>
-                <property name="has_entry">True</property>
-                <property name="entry_text_column">0</property>
-                <property name="active_id">0</property>
-                <signal name="changed" handler="Lockout_Mode_Menu_changed_cb" swapped="no"/>
-                <child internal-child="entry">
-                  <object class="GtkEntry">
-                    <property name="can_focus">False</property>
-                    <property name="editable">False</property>
-                    <property name="text" translatable="yes">Disabled</property>
-                    <property name="caps_lock_warning">False</property>
-                  </object>
-                </child>
+                <property name="active_id">lockout_mode_short</property>
+                <items>
+                  <item id="lockout_mode_short" translatable="yes">Short</item>
+                  <item id="lockout_mode_long" translatable="yes">Long</item>
+                </items>
+                <signal name="changed" handler="on_Lockout_Mode_Menu_changed" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="padding">15</property>
                 <property name="position">3</property>
               </packing>
             </child>
@@ -432,26 +293,34 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="Nowlin_Delay_Menu">
+              <object class="GtkComboBoxText" id="Nowlin_Delay_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="model">nowlin_delay_list</property>
-                <property name="button_sensitivity">on</property>
-                <property name="has_entry">True</property>
-                <property name="entry_text_column">0</property>
-                <property name="id_column">0</property>
+                <property name="margin_left">2</property>
+                <property name="margin_right">31</property>
+                <property name="active">1</property>
+                <items>
+                  <item translatable="yes">1</item>
+                  <item translatable="yes">2</item>
+                  <item translatable="yes">3</item>
+                  <item translatable="yes">4</item>
+                  <item translatable="yes">5</item>
+                  <item translatable="yes">6</item>
+                  <item translatable="yes">7</item>
+                  <item translatable="yes">8</item>
+                  <item translatable="yes">9</item>
+                  <item translatable="yes">10</item>
+                  <item translatable="yes">11</item>
+                  <item translatable="yes">12</item>
+                  <item translatable="yes">13</item>
+                  <item translatable="yes">14</item>
+                  <item translatable="yes">15</item>
+                  <item translatable="yes">16</item>
+                </items>
                 <signal name="changed" handler="on_Nowlin_Delay_Menu_changed" swapped="no"/>
-                <child internal-child="entry">
-                  <object class="GtkEntry">
-                    <property name="can_focus">False</property>
-                    <property name="editable">False</property>
-                    <property name="text" translatable="yes">1</property>
-                    <property name="caps_lock_warning">False</property>
-                  </object>
-                </child>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -460,12 +329,12 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_right">80</property>
                 <property name="label" translatable="yes">Lockout DAC</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">45</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -511,29 +380,24 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="Test_Point_Menu">
+              <object class="GtkComboBoxText" id="Test_Point_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="model">test_point_list</property>
+                <property name="margin_left">47</property>
                 <property name="active">0</property>
-                <property name="button_sensitivity">on</property>
-                <property name="has_entry">True</property>
-                <property name="entry_text_column">0</property>
-                <property name="id_column">0</property>
+                <property name="active_id">test_point_avss</property>
+                <items>
+                  <item id="test_point_avss" translatable="yes">AVSS</item>
+                  <item id="test_point_lockout" translatable="yes">Lockout Pulse</item>
+                  <item id="test_point_le" translatable="yes">Leading Edge Detector</item>
+                  <item id="test_point_zc" translatable="yes">Zero Crossing Detector</item>
+                  <item id="test_point_os" translatable="yes">Oneshot Trigger</item>
+                </items>
                 <signal name="changed" handler="on_Test_Point_Menu_changed" swapped="no"/>
-                <child internal-child="entry">
-                  <object class="GtkEntry">
-                    <property name="can_focus">False</property>
-                    <property name="editable">False</property>
-                    <property name="text" translatable="yes">AVSS</property>
-                    <property name="caps_lock_warning">False</property>
-                  </object>
-                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">45</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -541,36 +405,37 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">65</property>
+                <property name="margin_top">1</property>
                 <property name="label" translatable="yes">AGND Trim</property>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">True</property>
+                <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="AGND_Trim_Menu">
+              <object class="GtkComboBoxText" id="AGND_Trim_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="model">angd_trim_list</property>
-                <property name="button_sensitivity">on</property>
-                <property name="has_entry">True</property>
-                <property name="entry_text_column">0</property>
+                <property name="margin_left">41</property>
+                <property name="active">4</property>
+                <items>
+                  <item translatable="yes">1.36</item>
+                  <item translatable="yes">1.43</item>
+                  <item translatable="yes">1.49</item>
+                  <item translatable="yes">1.56</item>
+                  <item translatable="yes">1.63</item>
+                  <item translatable="yes">1.69</item>
+                  <item translatable="yes">1.77</item>
+                  <item translatable="yes">1.84</item>
+                </items>
                 <signal name="changed" handler="on_AGND_Trim_Menu_changed" swapped="no"/>
-                <child internal-child="entry">
-                  <object class="GtkEntry">
-                    <property name="can_focus">False</property>
-                    <property name="editable">False</property>
-                    <property name="text" translatable="yes">1.63 V</property>
-                    <property name="caps_lock_warning">False</property>
-                  </object>
-                </child>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="padding">55</property>
                 <property name="position">3</property>
               </packing>
             </child>
@@ -1726,6 +1591,93 @@
           </packing>
         </child>
         <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">10</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="File_Load_Label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Load configuration</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFileChooserButton" id="Load_File_Button">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="title" translatable="yes">Load Configuration File</property>
+                <signal name="file-set" handler="on_Load_File_Button_file_set" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkButton" id="Save_Config_Button">
+                <property name="label" translatable="yes">Save</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">image2</property>
+                <property name="image_position">right</property>
+                <signal name="clicked" handler="on_Save_Config_Button_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="Save_File_Name_Box">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="placeholder_text" translatable="yes">Enter a filename</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkButton" id="Configure_Button">
             <property name="label" translatable="yes">Configure Chip</property>
             <property name="visible">True</property>
@@ -1739,10 +1691,160 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">6</property>
+            <property name="position">9</property>
           </packing>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkListStore" id="lockout_mode_list">
+    <columns>
+      <!-- column-name lockout_modes -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Disabled</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Short</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Long</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="nowlin_delay_list">
+    <columns>
+      <!-- column-name shortvals -->
+      <column type="gchararray"/>
+      <!-- column-name longvals -->
+      <column type="gchararray"/>
+      <!-- column-name idcol -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">1</col>
+        <col id="1" translatable="yes">12</col>
+        <col id="2" translatable="yes">shortvals</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">2</col>
+        <col id="1" translatable="yes">24</col>
+        <col id="2" translatable="yes">longvals</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">3</col>
+        <col id="1" translatable="yes">36</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">4</col>
+        <col id="1" translatable="yes">48</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">5</col>
+        <col id="1" translatable="yes">60</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">6</col>
+        <col id="1" translatable="yes">72</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">7</col>
+        <col id="1" translatable="yes">84</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">8</col>
+        <col id="1" translatable="yes">96</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">9</col>
+        <col id="1" translatable="yes">108</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">10</col>
+        <col id="1" translatable="yes">120</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">11</col>
+        <col id="1" translatable="yes">132</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">12</col>
+        <col id="1" translatable="yes">144</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">13</col>
+        <col id="1" translatable="yes">156</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">14</col>
+        <col id="1" translatable="yes">168</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">15</col>
+        <col id="1" translatable="yes">180</col>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0" translatable="yes">16</col>
+        <col id="1" translatable="yes">192</col>
+        <col id="2" translatable="yes"/>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="nowlin_mode_list">
+    <columns>
+      <!-- column-name nowlin_short_str -->
+      <column type="gchararray"/>
+      <!-- column-name idcol -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes" context="&#10;">Short</col>
+        <col id="1" translatable="yes">nowlin_short_str</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Long</col>
+        <col id="1" translatable="yes"/>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="test_point_list">
+    <columns>
+      <!-- column-name test_point_values -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">AVSS</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Lockout Pulse</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Leading Edge Detector</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Zero Crossing Detector</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Oneshot Trigger</col>
+      </row>
+    </data>
   </object>
 </interface>
