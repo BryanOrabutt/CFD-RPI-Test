@@ -2,6 +2,9 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <cfd_rpi.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /* Setup GTK Object handles for each widget */
 
@@ -81,26 +84,10 @@ char ch_en[CHANNELS]; //individual channel enable flags
 
 /* Callback functions */
 
-void on_Save_Config_Button_clicked()
-{
-	GtkEntry* save_file = GTK_ENTRY(Save_File_Box_h);
-	const gchar* filename = gtk_entry_get_text(save_file);
-
-	g_printf("File saved to: %s\n", filename);
-}
-
-void on_Load_File_Button_file_set()
-{
-	GtkFileChooser* file = GTK_FILE_CHOOSER(Load_File_Box_h);
-	gchar* filename = gtk_file_chooser_get_filename(file);
-
-	g_printf("Selected load file: %s\n", filename);
-}
-
 void on_GEN_CB_toggled()
 {
+	printf("gen_cb = %p\n", GEN_CB_h);
 	GtkToggleButton* gen_cb = GTK_TOGGLE_BUTTON(GEN_CB_h);
-	
 	gen = (gtk_toggle_button_get_active(gen_cb)) ? 1:0;
 	printf("GEN toggled: %s\n", (gen) ? "ON":"OFF");
 }
@@ -265,7 +252,13 @@ void on_Nowlin_Delay_Menu_changed()
 
 void on_Test_Point_Menu_changed()
 {
-	printf("Test point menu changed\n");
+	GtkComboBoxText* tp_box = GTK_COMBO_BOX_TEXT(Test_Point_Menu_h);
+	gchar* tp = gtk_combo_box_text_get_active_text(tp_box);
+
+	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(tp_box));
+	test_point_sel = (char)index;
+
+	g_printf("Test point menu changed: %s\n", tp);
 }
 
 void on_Lockout_Mode_Menu_changed()
@@ -304,24 +297,23 @@ void on_Lockout_Mode_Menu_changed()
 	printf("Lockout mode menu changed: %s\n", str);
 }
 
-void on_lockout_dac_deleted_text()
-{
-	printf("Lockout DAC textbox: text deleted\n");
-}
-
-void on_lockout_dac_inserted_text()
-{
-	printf("Lockout DAC textbox: text inserted\n");
-}
-
 void on_AGND_Trim_Menu_changed()
 {
-	printf("AGND trim menu changed\n");
+	GtkComboBoxText* agnd_box = GTK_COMBO_BOX_TEXT(AGND_Trim_Menu_h);
+	gchar* val = gtk_combo_box_text_get_active_text(agnd_box);
+
+	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(agnd_box));
+	agnd_trim = (char)index;
+
+	g_printf("AGND trim menu changed: %s\n", val);
 }
 
 void channel_enable_event(int channel)
 {
 	printf("Channel%i enable toggled\n", channel);
+
+	ch_en[channel] ^= 1;	
+
 }
 
 void on_Channel0_EN_CB_toggled()
@@ -404,179 +396,96 @@ void on_Channel15_EN_CB_toggled()
 	channel_enable_event(15);
 }
 
-void channel_text_deleted(int channel)
-{
-	printf("Channel%d DAC box: text deleted\n", channel);
-}
-
-void channel_text_inserted(int channel)
-{
-	printf("Channel%d DAC box: text inserted\n", channel);
-}
-
-void on_ch0_dac_deleted_text()
-{
-	channel_text_deleted(0);
-}
-
-void on_ch0_dac_inserted_text()
-{
-	channel_text_inserted(0);
-}
-
-void on_ch1_dac_deleted_text()
-{
-	channel_text_deleted(1);
-}
-
-void on_ch1_dac_inserted_text()
-{
-	channel_text_inserted(1);
-}
-
-void on_ch2_dac_deleted_text()
-{
-	channel_text_deleted(2);
-}
-
-void on_ch2_dac_inserted_text()
-{
-	channel_text_inserted(2);
-}
-
-void on_ch3_dac_deleted_text()
-{
-	channel_text_deleted(3);
-}
-
-void on_ch3_dac_inserted_text()
-{
-	channel_text_inserted(3);
-}
-
-void on_ch4_dac_deleted_text()
-{
-	channel_text_deleted(4);
-}
-
-void on_ch4_dac_inserted_text()
-{
-	channel_text_inserted(4);
-}
-
-void on_ch5_dac_deleted_text()
-{
-	channel_text_deleted(5);
-}
-
-void on_ch5_dac_inserted_text()
-{
-	channel_text_inserted(5);
-}
-
-void on_ch6_dac_deleted_text()
-{
-	channel_text_deleted(6);
-}
-
-void on_ch6_dac_inserted_text()
-{
-	channel_text_inserted(6);
-}
-
-void on_ch7_dac_deleted_text()
-{
-	channel_text_deleted(7);
-}
-
-void on_ch7_dac_inserted_text()
-{
-	channel_text_inserted(7);
-}
-
-void on_ch8_dac_deleted_text()
-{
-	channel_text_deleted(8);
-}
-
-void on_ch8_dac_inserted_text()
-{
-	channel_text_inserted(8);
-}
-
-void on_ch9_dac_deleted_text()
-{
-	channel_text_deleted(9);
-}
-
-void on_ch9_dac_inserted_text()
-{
-	channel_text_inserted(9);
-}
-
-void on_ch10_dac_deleted_text()
-{
-	channel_text_deleted(10);
-}
-
-void on_ch10_dac_inserted_text()
-{
-	channel_text_inserted(10);
-}
-
-void on_ch11_dac_deleted_text()
-{
-	channel_text_deleted(11);
-}
-
-void on_ch11_dac_inserted_text()
-{
-	channel_text_inserted(11);
-}
-
-void on_ch12_dac_deleted_text()
-{
-	channel_text_deleted(12);
-}
-
-void on_ch12_dac_inserted_text()
-{
-	channel_text_inserted(12);
-}
-
-void on_ch13_dac_deleted_text()
-{
-	channel_text_deleted(13);
-}
-
-void on_ch13_dac_inserted_text()
-{
-	channel_text_inserted(13);
-}
-
-void on_ch14_dac_deleted_text()
-{
-	channel_text_deleted(14);
-}
-
-void on_ch14_dac_inserted_text()
-{
-	channel_text_inserted(14);
-}
-
-void on_ch15_dac_deleted_text()
-{
-	channel_text_deleted(15);
-}
-
-void on_ch15_dac_inserted_text()
-{
-	channel_text_inserted(15);
-}
-
 void on_Configure_Button_clicked()
 {
 	printf("Configure button clicked\n");
+}
+
+void on_Save_Config_Button_clicked()
+{
+	GtkEntry* save_file = GTK_ENTRY(Save_File_Box_h);
+	const gchar* filename = gtk_entry_get_text(save_file);
+
+	FILE* fd = fopen((const char*)filename, "w");
+
+	if(!fd)
+	{
+		perror("Failed to open file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	fwrite(&gen, sizeof(gen), 1, fd);
+	fwrite(&neg_pol, sizeof(neg_pol), 1, fd);
+	fwrite(&int_agnd_en, sizeof(int_agnd_en), 1, fd);
+	fwrite(&agnd_trim, sizeof(agnd_trim), 1, fd);
+	fwrite(&nowlin_mode, sizeof(nowlin_mode), 1, fd);
+	fwrite(&nowlin_delay, sizeof(nowlin_delay), 1, fd);
+	fwrite(&lockout_mode, sizeof(lockout_mode), 1, fd);
+	fwrite(&lockout_dac, sizeof(lockout_dac), 1, fd);
+	fwrite(&test_point_sel, sizeof(test_point_sel), 1, fd);
+	fwrite(&gmode, sizeof(gmode), 1, fd);
+	
+	if(gmode)
+	{
+		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), 1, fd);
+	}
+	else
+	{
+		fwrite(leading_edge_dac, CHANNELS*sizeof(leading_edge_dac[0]), CHANNELS, fd);
+	}
+
+	fwrite(ch_en, CHANNELS*sizeof(ch_en[0]), CHANNELS, fd);
+
+	fclose(fd);
+
+	g_printf("File saved to: %s\n", filename);
+}
+
+void on_Load_File_Button_selection_changed()
+{
+	GtkFileChooser* file = GTK_FILE_CHOOSER(Load_File_Box_h);
+	gchar* filename = gtk_file_chooser_get_filename(file);
+	
+	FILE* fd = fopen((const char*)filename, "r");
+
+	if(!fd)
+	{
+		perror("Failed to open file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	fread(&gen, sizeof(gen), 1, fd);
+	g_signal_handlers_block_by_func(GEN_CB_h, G_CALLBACK(on_GEN_CB_toggled), NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GEN_CB_h), gen);	
+	g_signal_handlers_unblock_by_func(GEN_CB_h, G_CALLBACK(on_GEN_CB_toggled), NULL);
+
+	fread(&neg_pol, sizeof(neg_pol), 1, fd);
+	GtkToggleButton* neg_pol_cb = GTK_TOGGLE_BUTTON(Neg_Pol_CB_h);
+	gtk_toggle_button_set_active(neg_pol_cb, neg_pol);
+
+	fread(&int_agnd_en, sizeof(int_agnd_en), 1, fd);
+	fread(&agnd_trim, sizeof(agnd_trim), 1, fd);
+	fread(&nowlin_mode, sizeof(nowlin_mode), 1, fd);
+	fread(&nowlin_delay, sizeof(nowlin_delay), 1, fd);
+	fread(&lockout_mode, sizeof(lockout_mode), 1, fd);
+	fread(&lockout_dac, sizeof(lockout_dac), 1, fd);
+	fread(&test_point_sel, sizeof(test_point_sel), 1, fd);
+	fread(&gmode, sizeof(gmode), 1, fd);
+	
+	if(gmode)
+	{
+		fread(leading_edge_dac, sizeof(leading_edge_dac[0]), 1, fd);
+	}
+	else
+	{
+		fread(leading_edge_dac, CHANNELS*sizeof(leading_edge_dac[0]), CHANNELS, fd);
+	}
+
+	fread(ch_en, CHANNELS*sizeof(ch_en[0]), CHANNELS, fd);
+
+	fclose(fd);
+	
+	g_printf("Loaded configuration from file: %s\n", filename);
 }
 
 // called when window is closed
