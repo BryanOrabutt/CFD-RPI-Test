@@ -116,6 +116,7 @@
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">CFD Configuration Utility</property>
     <property name="resizable">False</property>
+    <property name="window_position">center</property>
     <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
     <child>
       <placeholder/>
@@ -215,6 +216,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -222,7 +224,6 @@
               <object class="GtkComboBoxText" id="Nowlin_Mode_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">26</property>
                 <property name="margin_right">10</property>
                 <property name="active">0</property>
                 <property name="active_id">nowlin_mode_short</property>
@@ -245,9 +246,9 @@
                 <property name="label" translatable="yes">Lockout Mode</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="padding">21</property>
+                <property name="padding">10</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -255,11 +256,12 @@
               <object class="GtkComboBoxText" id="Lockout_Mode_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="active">0</property>
-                <property name="active_id">lockout_mode_short</property>
+                <property name="active">2</property>
+                <property name="active_id">lockout_mode_disabled</property>
                 <items>
                   <item id="lockout_mode_short" translatable="yes">Short</item>
                   <item id="lockout_mode_long" translatable="yes">Long</item>
+                  <item id="lockout_mode_disabled" translatable="yes">Disabled</item>
                 </items>
                 <signal name="changed" handler="on_Lockout_Mode_Menu_changed" swapped="no"/>
               </object>
@@ -296,9 +298,8 @@
               <object class="GtkComboBoxText" id="Nowlin_Delay_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">2</property>
-                <property name="margin_right">31</property>
                 <property name="active">1</property>
+                <property name="popup_fixed_width">False</property>
                 <items>
                   <item translatable="yes">1</item>
                   <item translatable="yes">2</item>
@@ -322,6 +323,7 @@
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -329,19 +331,20 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_right">80</property>
+                <property name="margin_left">62</property>
                 <property name="label" translatable="yes">Lockout DAC</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">2</property>
               </packing>
             </child>
             <child>
               <object class="GtkEntry" id="Lockout_DAC_Box">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
                 <property name="buffer">lockout_dac</property>
                 <property name="max_length">4</property>
                 <property name="max_width_chars">4</property>
@@ -351,7 +354,7 @@
                 <property name="placeholder_text" translatable="yes">0x00</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">3</property>
               </packing>
@@ -376,6 +379,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -383,7 +387,6 @@
               <object class="GtkComboBoxText" id="Test_Point_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">47</property>
                 <property name="active">0</property>
                 <property name="active_id">test_point_avss</property>
                 <items>
@@ -405,13 +408,13 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">65</property>
                 <property name="margin_top">1</property>
                 <property name="label" translatable="yes">AGND Trim</property>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -419,7 +422,6 @@
               <object class="GtkComboBoxText" id="AGND_Trim_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">41</property>
                 <property name="active">4</property>
                 <items>
                   <item translatable="yes">1.36</item>
@@ -476,6 +478,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -545,6 +548,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -577,7 +581,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="Channel1_LE_DAC_Box1">
+                  <object class="GtkEntry" id="Channel1_LE_DAC_Box">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="buffer">ch1_dac</property>
@@ -615,6 +619,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -687,6 +692,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -757,6 +763,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -827,6 +834,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -897,6 +905,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -967,6 +976,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -1037,6 +1047,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -1107,6 +1118,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">4</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
