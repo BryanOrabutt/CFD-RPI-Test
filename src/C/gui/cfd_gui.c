@@ -93,16 +93,10 @@ void on_GEN_CB_toggled()
 	printf("GEN toggled: %s\n", (gen) ? "ON":"OFF");
 }
 
-/* Gen Gmode is toggled, change gmode variable, then update alll channel DAC
- * text fields so that they are uneditable and display "N/A". Allow only
- * channel 0 to be updated.
+/* Sets the GUI state for Gmode as described in GMode_CB_toggled
 */
-void on_GMode_CB_toggled()
+void gmode_helper()
 {
-	GtkToggleButton* gmode_cb = GTK_TOGGLE_BUTTON(GMode_CB_h);
-
-	gmode = (gtk_toggle_button_get_active(gmode_cb)) ? 1:0;
-	
 	if(gmode)
 	{
 			gtk_entry_set_text(GTK_ENTRY(Channel1_LE_DAC_Box_h), "N/A");
@@ -200,6 +194,19 @@ void on_GMode_CB_toggled()
 			gtk_widget_set_can_focus(Channel15_LE_DAC_Box_h, 1);
 	}
 
+}
+
+/* Gen Gmode is toggled, change gmode variable, then update alll channel DAC
+ * text fields so that they are uneditable and display "N/A". Allow only
+ * channel 0 to be updated.
+*/
+void on_GMode_CB_toggled()
+{
+	GtkToggleButton* gmode_cb = GTK_TOGGLE_BUTTON(GMode_CB_h);
+
+	gmode = (gtk_toggle_button_get_active(gmode_cb)) ? 1:0;
+	gmode_helper();
+	
 	printf("GMode toggled: %s\n", (gmode) ? "ON":"OFF");
 }
 
@@ -285,7 +292,7 @@ void on_Test_Point_Menu_changed()
 
 /* When Lockout_Mode menu changes, determine the mode it changed to.
  * If it is disabled, do not allow lockout DAC field to be updated and
- * instead display "N/A". Save index into lockout_mode variable
+ * instead display "N/A". Update lockout_mode variable.
 */
 void on_Lockout_Mode_Menu_changed()
 {
@@ -323,6 +330,9 @@ void on_Lockout_Mode_Menu_changed()
 	printf("Lockout mode menu changed: %s\n", str);
 }
 
+/* When AGND_Trim menu changes, save index into agnd_trim variable and
+ * print a message.
+*/
 void on_AGND_Trim_Menu_changed()
 {
 	GtkComboBoxText* agnd_box = GTK_COMBO_BOX_TEXT(AGND_Trim_Menu_h);
@@ -334,11 +344,16 @@ void on_AGND_Trim_Menu_changed()
 	g_printf("AGND trim menu changed: %s\n", val);
 }
 
+/* Master callback for all ChannelX_CB callbacks. Print message and toggle
+ * the ch_en variable for the channel
+*/
 void channel_enable_event(int channel)
 {
 	printf("Channel%i enable toggled\n", channel);
 
 	ch_en[channel] ^= 1;	
+
+	printf("ch_en[%d]: %d\n", channel, ch_en[channel]);
 
 }
 
@@ -422,11 +437,16 @@ void on_Channel15_EN_CB_toggled()
 	channel_enable_event(15);
 }
 
+/* When Configure_Button is clicked, TODO: configure chip
+*/
 void on_Configure_Button_clicked()
 {
 	printf("Configure button clicked\n");
 }
 
+/* When Save_Config is clicked, open a file using named specified in the
+ * Save_File_Box and write every global variable to the file
+*/
 void on_Save_Config_Button_clicked()
 {
 	GtkEntry* save_file = GTK_ENTRY(Save_File_Box_h);
@@ -447,7 +467,14 @@ void on_Save_Config_Button_clicked()
 	fwrite(&nowlin_mode, sizeof(nowlin_mode), 1, fd);
 	fwrite(&nowlin_delay, sizeof(nowlin_delay), 1, fd);
 	fwrite(&lockout_mode, sizeof(lockout_mode), 1, fd);
-	fwrite(&lockout_dac, sizeof(lockout_dac), 1, fd);
+	
+
+	if(lockout_mode != LOCKOUT_DISABLED)
+	{
+		lockout_dac = (char)g_ascii_strtoll(gtk_entry_get_text(GTK_ENTRY(Lockout_DAC_Box_h)), NULL, 16);
+		fwrite(&lockout_dac, sizeof(lockout_dac), 1, fd);
+	}
+
 	fwrite(&test_point_sel, sizeof(test_point_sel), 1, fd);
 	fwrite(&gmode, sizeof(gmode), 1, fd);
 	
@@ -460,19 +487,23 @@ void on_Save_Config_Button_clicked()
 		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), CHANNELS, fd);
 	}
 
-	fwrite(ch_en, CHANNELS*sizeof(ch_en[0]), CHANNELS, fd);
+	fwrite(ch_en, sizeof(ch_en[0]), CHANNELS, fd);
 
 	fclose(fd);
 
 	g_printf("File saved to: %s\n", filename);
 }
 
+/* When Load_Config is clicked, open a file using named specified in the
+ * Load_File_Box and read contents out, updating each global variable.
+*/
 void on_Load_Config_Button_clicked()
 {
 	GtkEntry* load_file = GTK_ENTRY(Load_File_Box_h);
 	const gchar* filename = gtk_entry_get_text(load_file);
 	
 	FILE* fd = fopen((const char*)filename, "r");
+	gchar str[7];
 
 	if(!fd)
 	{
@@ -487,31 +518,110 @@ void on_Load_Config_Button_clicked()
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Neg_Pol_CB_h), neg_pol);
 
 	fread(&int_agnd_en, sizeof(int_agnd_en), 1, fd);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Internal_AGND_CB_h), int_agnd_en);
+
 	fread(&agnd_trim, sizeof(agnd_trim), 1, fd);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(AGND_Trim_Menu_h), agnd_trim);
+
 	fread(&nowlin_mode, sizeof(nowlin_mode), 1, fd);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(Nowlin_Mode_Menu_h), nowlin_mode);
+
 	fread(&nowlin_delay, sizeof(nowlin_delay), 1, fd);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(Nowlin_Delay_Menu_h), nowlin_delay);
+
 	fread(&lockout_mode, sizeof(lockout_mode), 1, fd);
-	fread(&lockout_dac, sizeof(lockout_dac), 1, fd);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(Lockout_Mode_Menu_h), lockout_mode);
+
+	if(lockout_mode != LOCKOUT_DISABLED)
+	{
+		fread(&lockout_dac, sizeof(lockout_dac), 1, fd);
+		g_snprintf(str, 7, "0x%02X", lockout_dac);
+		gtk_entry_set_text(GTK_ENTRY(Lockout_DAC_Box_h), str);
+	}
+	else
+	{
+		gtk_editable_set_editable(GTK_EDITABLE(Lockout_DAC_Box_h), 0);
+		gtk_entry_set_text(GTK_ENTRY(Lockout_DAC_Box_h), "N/A");	
+	}
+
 	fread(&test_point_sel, sizeof(test_point_sel), 1, fd);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(Test_Point_Menu_h), test_point_sel);
+
 	fread(&gmode, sizeof(gmode), 1, fd);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GMode_CB_h), gmode);
 	
 	if(gmode)
 	{
 		fread(leading_edge_dac, sizeof(leading_edge_dac[0]), 1, fd);
+		gmode_helper();
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[0]);
+		gtk_entry_set_text(GTK_ENTRY(Channel0_LE_DAC_Box_h), str);
 	}
 	else
 	{
-		fread(leading_edge_dac, sizeof(leading_edge_dac[0]), CHANNELS, fd);
+		fread(leading_edge_dac, sizeof(str[0]), CHANNELS, fd);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[0]);
+		gtk_entry_set_text(GTK_ENTRY(Channel0_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[1]);
+		gtk_entry_set_text(GTK_ENTRY(Channel1_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[2]);
+		gtk_entry_set_text(GTK_ENTRY(Channel2_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[3]);
+		gtk_entry_set_text(GTK_ENTRY(Channel3_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[4]);
+		gtk_entry_set_text(GTK_ENTRY(Channel4_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[5]);
+		gtk_entry_set_text(GTK_ENTRY(Channel5_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[6]);
+		gtk_entry_set_text(GTK_ENTRY(Channel6_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[7]);
+		gtk_entry_set_text(GTK_ENTRY(Channel7_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[8]);
+		gtk_entry_set_text(GTK_ENTRY(Channel8_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[9]);
+		gtk_entry_set_text(GTK_ENTRY(Channel9_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[10]);
+		gtk_entry_set_text(GTK_ENTRY(Channel10_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[11]);
+		gtk_entry_set_text(GTK_ENTRY(Channel11_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[12]);
+		gtk_entry_set_text(GTK_ENTRY(Channel12_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[13]);
+		gtk_entry_set_text(GTK_ENTRY(Channel13_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[14]);
+		gtk_entry_set_text(GTK_ENTRY(Channel14_LE_DAC_Box_h), str);
+		g_snprintf(str, 6, "0x%02X", leading_edge_dac[15]);
+		gtk_entry_set_text(GTK_ENTRY(Channel15_LE_DAC_Box_h), str);
 	}
 
 	fread(ch_en, sizeof(ch_en[0]), CHANNELS, fd);
+
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel0_EN_CB_h), ch_en[0]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel1_EN_CB_h), ch_en[1]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel2_EN_CB_h), ch_en[2]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel3_EN_CB_h), ch_en[3]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel4_EN_CB_h), ch_en[4]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel5_EN_CB_h), ch_en[5]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel6_EN_CB_h), ch_en[6]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel7_EN_CB_h), ch_en[7]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel8_EN_CB_h), ch_en[8]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel9_EN_CB_h), ch_en[9]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel10_EN_CB_h), ch_en[10]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel11_EN_CB_h), ch_en[11]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel12_EN_CB_h), ch_en[12]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel13_EN_CB_h), ch_en[13]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel14_EN_CB_h), ch_en[14]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel15_EN_CB_h), ch_en[15]);
+
 
 	fclose(fd);
 	
 	g_printf("Loaded configuration from file: %s\n", filename);
 }
 
-// called when window is closed
+/* When main window is closed, exit program 
+*/
 void on_window_main_destroy()
 {
     gtk_main_quit();
