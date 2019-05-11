@@ -61,7 +61,8 @@ GtkWidget *Channel15_LE_DAC_Box_h;
 //Save & load interface handles
 GtkWidget *Save_File_Box_h;
 GtkWidget *Load_File_Box_h;
-GtkWidget *Save_File_Button_h;
+GtkWidget *Save_Config_Button_h;
+GtkWidget *Load_Config_Button_h;
 
 //config button
 GtkWidget *Confiure_Button_h;
@@ -84,14 +85,18 @@ char ch_en[CHANNELS]; //individual channel enable flags
 
 /* Callback functions */
 
+/* When GEN is toggled, change the gen variable and print a message */
 void on_GEN_CB_toggled()
 {
 	printf("gen_cb = %p\n", GEN_CB_h);
-	GtkToggleButton* gen_cb = GTK_TOGGLE_BUTTON(GEN_CB_h);
-	gen = (gtk_toggle_button_get_active(gen_cb)) ? 1:0;
+	gen = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GEN_CB_h))) ? 1:0;
 	printf("GEN toggled: %s\n", (gen) ? "ON":"OFF");
 }
 
+/* Gen Gmode is toggled, change gmode variable, then update alll channel DAC
+ * text fields so that they are uneditable and display "N/A". Allow only
+ * channel 0 to be updated.
+*/
 void on_GMode_CB_toggled()
 {
 	GtkToggleButton* gmode_cb = GTK_TOGGLE_BUTTON(GMode_CB_h);
@@ -198,6 +203,7 @@ void on_GMode_CB_toggled()
 	printf("GMode toggled: %s\n", (gmode) ? "ON":"OFF");
 }
 
+/* When Neg_Pol is toggled, update neg_pol variable and print a message */
 void on_Neg_Pol_CB_toggled()
 {
 	GtkToggleButton* neg_pol_cb = GTK_TOGGLE_BUTTON(Neg_Pol_CB_h);
@@ -206,6 +212,7 @@ void on_Neg_Pol_CB_toggled()
 	printf("Neg pol toggled: %s\n", (neg_pol) ? "ON":"OFF");
 }
 
+/* When Int_AGND is toggled, update int_agnd_en variable and print a message */
 void on_Internal_AGND_CB_toggled()
 {
 	GtkToggleButton* agnd_cb = GTK_TOGGLE_BUTTON(Internal_AGND_CB_h);
@@ -214,6 +221,11 @@ void on_Internal_AGND_CB_toggled()
 	printf("Internal AGND toggled: %s\n", (int_agnd_en) ? "ON":"OFF");
 }
 
+/* When Nowlin_Mode_Menu changes state, determine what state is has changed
+ * to, and update the values in the NowlinDelay box. This is done by delteing
+ * all current values in the selection list and appending new ones to match 
+ * the mode selected.
+*/
 void on_Nowlin_Mode_Menu_changed()
 {
 	printf("Nowlin mode menu changed\t");
@@ -242,14 +254,24 @@ void on_Nowlin_Mode_Menu_changed()
 
 }
 
+/* When Nowlin_Delay changes, save delay menu index into nowlin_delay 
+ * variable and print a message
+*/
 void on_Nowlin_Delay_Menu_changed()
 {
 	GtkComboBoxText* delaybox = GTK_COMBO_BOX_TEXT(Nowlin_Delay_Menu_h);
 	
+	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(delaybox));
 	gchar* delay = gtk_combo_box_text_get_active_text(delaybox);
+
+	nowlin_delay = (char)index;	
+
 	g_printf("Nowlin delay menu changed: %s ns\n", delay);
 }
 
+/* When Test_Poin menu changes, save tp menu index into test_point_sel
+ * variable and print a message
+*/
 void on_Test_Point_Menu_changed()
 {
 	GtkComboBoxText* tp_box = GTK_COMBO_BOX_TEXT(Test_Point_Menu_h);
@@ -261,6 +283,10 @@ void on_Test_Point_Menu_changed()
 	g_printf("Test point menu changed: %s\n", tp);
 }
 
+/* When Lockout_Mode menu changes, determine the mode it changed to.
+ * If it is disabled, do not allow lockout DAC field to be updated and
+ * instead display "N/A". Save index into lockout_mode variable
+*/
 void on_Lockout_Mode_Menu_changed()
 {
 	GtkComboBoxText* modebox = GTK_COMBO_BOX_TEXT(Lockout_Mode_Menu_h);
@@ -431,7 +457,7 @@ void on_Save_Config_Button_clicked()
 	}
 	else
 	{
-		fwrite(leading_edge_dac, CHANNELS*sizeof(leading_edge_dac[0]), CHANNELS, fd);
+		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), CHANNELS, fd);
 	}
 
 	fwrite(ch_en, CHANNELS*sizeof(ch_en[0]), CHANNELS, fd);
@@ -441,10 +467,10 @@ void on_Save_Config_Button_clicked()
 	g_printf("File saved to: %s\n", filename);
 }
 
-void on_Load_File_Button_selection_changed()
+void on_Load_Config_Button_clicked()
 {
-	GtkFileChooser* file = GTK_FILE_CHOOSER(Load_File_Box_h);
-	gchar* filename = gtk_file_chooser_get_filename(file);
+	GtkEntry* load_file = GTK_ENTRY(Load_File_Box_h);
+	const gchar* filename = gtk_entry_get_text(load_file);
 	
 	FILE* fd = fopen((const char*)filename, "r");
 
@@ -455,13 +481,10 @@ void on_Load_File_Button_selection_changed()
 	}
 
 	fread(&gen, sizeof(gen), 1, fd);
-	g_signal_handlers_block_by_func(GEN_CB_h, G_CALLBACK(on_GEN_CB_toggled), NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GEN_CB_h), gen);	
-	g_signal_handlers_unblock_by_func(GEN_CB_h, G_CALLBACK(on_GEN_CB_toggled), NULL);
 
 	fread(&neg_pol, sizeof(neg_pol), 1, fd);
-	GtkToggleButton* neg_pol_cb = GTK_TOGGLE_BUTTON(Neg_Pol_CB_h);
-	gtk_toggle_button_set_active(neg_pol_cb, neg_pol);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Neg_Pol_CB_h), neg_pol);
 
 	fread(&int_agnd_en, sizeof(int_agnd_en), 1, fd);
 	fread(&agnd_trim, sizeof(agnd_trim), 1, fd);
@@ -478,10 +501,10 @@ void on_Load_File_Button_selection_changed()
 	}
 	else
 	{
-		fread(leading_edge_dac, CHANNELS*sizeof(leading_edge_dac[0]), CHANNELS, fd);
+		fread(leading_edge_dac, sizeof(leading_edge_dac[0]), CHANNELS, fd);
 	}
 
-	fread(ch_en, CHANNELS*sizeof(ch_en[0]), CHANNELS, fd);
+	fread(ch_en, sizeof(ch_en[0]), CHANNELS, fd);
 
 	fclose(fd);
 	
@@ -569,8 +592,9 @@ int main(int argc, char *argv[])
 	Channel15_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel15_LE_DAC_Box"));
 
 	Save_File_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Save_File_Name_Box"));
-	Load_File_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Load_File_Button"));
-	Save_File_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "Save_Config_Button"));
+	Load_File_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Load_File_Name_Box"));
+	Save_Config_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "Save_Config_Button"));
+	Load_Config_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "Load_Config_Button"));
 
 	/* Set default values for configuration */
 	gen = 1; //enable chip
