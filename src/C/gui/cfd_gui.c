@@ -471,7 +471,7 @@ void on_Save_Config_Button_clicked()
 
 	if(lockout_mode != LOCKOUT_DISABLED)
 	{
-		lockout_dac = (char)g_ascii_strtoll(gtk_entry_get_text(GTK_ENTRY(Lockout_DAC_Box_h)), NULL, 16);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Lockout_DAC_Box_h)), "0x%02X", &lockout_dac);
 		fwrite(&lockout_dac, sizeof(lockout_dac), 1, fd);
 	}
 
@@ -480,10 +480,27 @@ void on_Save_Config_Button_clicked()
 	
 	if(gmode)
 	{
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[0]);
 		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), 1, fd);
 	}
 	else
 	{
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[0]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel1_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[1]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel2_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[2]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel3_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[3]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel4_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[4]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel5_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[5]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel6_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[6]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel7_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[7]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel8_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[8]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel9_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[9]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel10_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[10]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel11_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[11]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel12_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[12]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel13_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[13]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel14_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[14]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel15_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[15]);
 		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), CHANNELS, fd);
 	}
 
