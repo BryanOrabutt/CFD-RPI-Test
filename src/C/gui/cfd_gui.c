@@ -68,7 +68,7 @@ GtkWidget *Load_Config_Button_h;
 GtkWidget *Confiure_Button_h;
 
 /* Global variables */
-char leading_edge_dac[CHANNELS]; //value to write to individual channel
+unsigned int leading_edge_dac[CHANNELS]; //value to write to individual channel
 char gmode;
 char neg_pol;
 char gen;
@@ -78,7 +78,7 @@ char nowlin_mode;
 char nowlin_delay;
 char lockout_mode;
 char test_point_sel;
-char lockout_dac;
+unsigned int lockout_dac;
 char ch_en[CHANNELS]; //individual channel enable flags
 
 
@@ -244,13 +244,11 @@ void on_Nowlin_Mode_Menu_changed()
 
 	gtk_combo_box_text_remove_all(delaybox);
 
-	gchar* tmp = "Short";
-	int scale = 1;
+	nowlin_mode = (char)gtk_combo_box_get_active(GTK_COMBO_BOX(modebox));
+	int scale = (nowlin_mode == NOWLIN_LONG) ? 12:1;
+	printf("Nowlin mode changed to: %s\n", (nowlin_mode == NOWLIN_SHORT) ? "SHORT":"LONG");
 
-	if(g_strcmp0(tmp, mode) != 0)
-		scale = 12;
-
-	for(int i = 0; i < 16; i++)
+	for(int i = 0; i < CHANNELS; i++)
 	{
 		gchar str[4];
 		g_snprintf(str, 4, "%d", (i+1)*scale);
@@ -480,27 +478,27 @@ void on_Save_Config_Button_clicked()
 	
 	if(gmode)
 	{
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[0]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "0x%02X", leading_edge_dac);
 		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), 1, fd);
 	}
 	else
 	{
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[0]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel1_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[1]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel2_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[2]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel3_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[3]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel4_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[4]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel5_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[5]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel6_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[6]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel7_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[7]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel8_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[8]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel9_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[9]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel10_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[10]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel11_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[11]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel12_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[12]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel13_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[13]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel14_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[14]);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel15_LE_DAC_Box_h)), "0x%02X", leading_edge_dac[15]);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+0);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel1_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+1);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel2_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+2);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel3_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+3);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel4_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+4);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel5_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+5);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel6_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+6);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel7_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+7);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel8_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+8);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel9_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+9);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel10_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+10);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel11_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+11);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel12_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+12);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel13_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+13);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel14_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+14);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel15_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+15);
 		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), CHANNELS, fd);
 	}
 
@@ -552,7 +550,8 @@ void on_Load_Config_Button_clicked()
 	if(lockout_mode != LOCKOUT_DISABLED)
 	{
 		fread(&lockout_dac, sizeof(lockout_dac), 1, fd);
-		g_snprintf(str, 7, "0x%02X", lockout_dac);
+		g_snprintf(str, 6, "0x%02X", lockout_dac);
+		printf("Lockout DAC str: %s\n", str);
 		gtk_entry_set_text(GTK_ENTRY(Lockout_DAC_Box_h), str);
 	}
 	else
@@ -572,11 +571,12 @@ void on_Load_Config_Button_clicked()
 		fread(leading_edge_dac, sizeof(leading_edge_dac[0]), 1, fd);
 		gmode_helper();
 		g_snprintf(str, 6, "0x%02X", leading_edge_dac[0]);
+		printf("DAC0 str: %s\n", str);
 		gtk_entry_set_text(GTK_ENTRY(Channel0_LE_DAC_Box_h), str);
 	}
 	else
 	{
-		fread(leading_edge_dac, sizeof(str[0]), CHANNELS, fd);
+		fread(leading_edge_dac, sizeof(leading_edge_dac[0]), CHANNELS, fd);
 		g_snprintf(str, 6, "0x%02X", leading_edge_dac[0]);
 		gtk_entry_set_text(GTK_ENTRY(Channel0_LE_DAC_Box_h), str);
 		g_snprintf(str, 6, "0x%02X", leading_edge_dac[1]);

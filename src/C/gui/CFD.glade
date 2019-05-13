@@ -1163,6 +1163,7 @@
                     <property name="receives_default">False</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_Channel11_EN_CB_toggled" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
