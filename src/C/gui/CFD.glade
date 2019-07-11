@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkImage" id="image1">
@@ -23,6 +23,9 @@
     <property name="resizable">False</property>
     <property name="window_position">center</property>
     <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -362,6 +365,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -370,10 +374,16 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="active">0</property>
+                <items>
+                  <item id="cfd_50ns" translatable="yes">50</item>
+                  <item id="cfd_100ns" translatable="yes">100</item>
+                  <item id="cfd_200ns" translatable="yes">200</item>
+                  <item id="cfd_500ns" translatable="yes">500</item>
+                </items>
                 <signal name="changed" handler="on_CFD_PW_Menu_changed" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -387,6 +397,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -394,10 +405,28 @@
               <object class="GtkComboBoxText" id="TP_Channel_Menu">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <items>
+                  <item translatable="yes">1</item>
+                  <item translatable="yes">2</item>
+                  <item translatable="yes">3</item>
+                  <item translatable="yes">4</item>
+                  <item translatable="yes">5</item>
+                  <item translatable="yes">6</item>
+                  <item translatable="yes">7</item>
+                  <item translatable="yes">8</item>
+                  <item translatable="yes">9</item>
+                  <item translatable="yes">10</item>
+                  <item translatable="yes">11</item>
+                  <item translatable="yes">12</item>
+                  <item translatable="yes">13</item>
+                  <item translatable="yes">14</item>
+                  <item translatable="yes">15</item>
+                  <item translatable="yes">16</item>
+                </items>
                 <signal name="changed" handler="on_TP_Channel_Menu_changed" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">3</property>
               </packing>
