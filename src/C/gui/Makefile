@@ -26,7 +26,7 @@ LD=gcc
 #  LDFLAGS=$(PTHREAD) $(GTKLIB) -export-dynamic -rdynamic
 LDFLAGS=$(PTHREAD) $(GTKLIB) -export-dynamic
 
-OBJS=    $(TARGET).o
+OBJS=    $(TARGET).o cfd.o
 
 all: $(OBJS)
 	$(LD) -o $(TARGET) $(OBJS) $(LDFLAGS)

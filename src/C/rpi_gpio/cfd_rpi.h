@@ -86,6 +86,24 @@ volatile unsigned *gpio;
 /* Test points */
 #define TP_AVSS			0
 #define TP_LOCKOUT		1
-#define TP_LEADING_EDGE	2
-#define TP_ZERO_CROSS	3
-#define TP_ONESHOT		4
+#define TP_LEADING_EDGE	#define TP_ZERO_CROSS	#define TP_ONESHOT		4
+
+#define NEGATIVE_POL 1
+#define POSITIVE_POL 0
+
+#define ENABLE	0
+#define DISABLE	1
+
+void rpi_cleanup_gpio(void);
+void rpi_configure(void);
+void rpi_setup_io(void);
+void delay_ns(long ns);
+void set_addr_mode(char addr, char mode);
+void set_data(char data);
+void strobe_high(void);
+void strobe_low(void);
+void set_internal_agnd(char val);
+void pulse_rst_l(void);
+void set_polarity(char pol);
+void set_gen(char val);
+

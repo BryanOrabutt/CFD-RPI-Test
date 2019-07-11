@@ -5,20 +5,119 @@
 #include <time.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include "cfd_direct.h"
+#include "cfd_rpi.h"
+#include <sched.h>
 
 //Pin accessors
 const unsigned char DATA[8] = {5,6,13,19,26,16,20,21}; //data bus -- used to load configuration registers
 const unsigned char ADDR[4] = {5,6,13,19}; //address bus -- just an alias of the upper nibble of the data bus
 const unsigned char MODE[4] = {26,16,20,21}; //mode bus -- just an alias of the lower nibble of the data bus
 const unsigned char NEG_POL = 7; //negative polarity enable -- POS,NEG = 0,1
-const unsigned char BUS_DIR = 24; //bidirectional bus control -- IN,OUT = 1,0
+const unsigned char WRITE = 24; //bidirectional bus control -- IN,OUT = 1,0
 const unsigned char STB = 25; //data/address strobe -- addr/mode latched on rising edge, data latched on falling edge
 const unsigned char GEN = 9; //global enable -- OUTPUT,NO_OUTPUT = 1,0
 const unsigned char EXT_AGND = 23; //external AGND enable -- INTERNAL,EXTERNAL = 0,1
 const unsigned char RST_L = 12; //low active reset -- ensures one-shot works properly.
 
 int iter; //iterator for loops
+
+void set_addr_mode(char addr, char mode)
+{
+	GPIO_SET = 1 << WRITE;
+	
+	for(iter = 0; iter < MODE_BITS; iter++)
+	{
+		if(addr & (1 << iter))
+		{
+			GPIO_SET = 1 << ADDR[iter];
+		}
+		else
+		{
+			GPIO_CLR = 1 << ADDR[iter];
+		}
+
+		if(mode & (1 << iter))
+		{
+			GPIO_SET = 1 << MODE[iter];
+		}
+		else
+		{
+			GPIO_CLR = 1 << MODE[iter];
+		}	
+	}
+	
+	GPIO_CLR = 1 << WRITE;
+}
+
+void set_data(char data)
+{
+	GPIO_SET = 1 << WRITE;
+	
+	for(iter = 0; iter < DATA_BITS; iter++)
+	{
+		if(data & (1 << iter))
+		{
+			GPIO_SET = 1 << DATA[iter];
+		}
+		else
+		{
+			GPIO_CLR = 1 << DATA[iter];
+		}
+	}
+}
+
+void strobe_high()
+{
+	GPIO_SET = 1 << STB;
+}
+
+void strobe_low()
+{
+	GPIO_CLR = 1 << STB;
+}
+
+void set_internal_agnd(char val)
+{
+	if(val == ENABLE)
+	{
+		GPIO_CLR = 1 << EXT_AGND;
+	}
+	else
+	{
+		GPIO_SET = 1 << EXT_AGND;
+	}
+}
+
+void pulse_rst_l()
+{
+	GPIO_CLR = 1 << RST_L;
+	delay_ns(5000);
+	GPIO_SET = 1 << RST_L;
+}
+
+void set_polarity(char pol)
+{
+	if(pol == NEGATIVE_POL)
+	{
+		GPIO_SET = 1 << NEG_POL;
+	}
+	else
+	{
+		GPIO_CLR = 1 << NEG_POL;
+	}
+}
+
+void set_gen(char val)
+{
+	if(val)
+	{
+		GPIO_SET = 1 << GEN;
+	}
+	else
+	{
+		GPIO_CLR = 1 << GEN;
+	}
+}
 
 void delay_ns(long ns)
 {
@@ -38,7 +137,7 @@ void delay_ns(long ns)
 	}
 }
 
-void setup_io()
+void rpi_setup_io()
 {
    // open /dev/gpiomem 
    if ((mem_fd = open("/dev/gpiomem", O_RDWR|O_SYNC) ) < 0) 
@@ -70,13 +169,13 @@ void setup_io()
 }
 
 //setup GPIO modes and set initial control line states.
-void configure()
+void rpi_configure()
 {
     //Must use INP_GPIO before OUT_GPIO. INP_GPIO will ensure the two MSBs for FSEL are 0
     //OUT_GPIO will set LSB of FSEL to 1 so that the function select is 001 which is output
-    INP_GPIO(BUS_DIR);
-    OUT_GPIO(BUS_DIR);
-	GPIO_CLR = 1 << BUS_DIR;
+    INP_GPIO(WRITE);
+    OUT_GPIO(WRITE);
+	GPIO_CLR = 1 << WRITE;
 	INP_GPIO(STB);
     OUT_GPIO(STB);
 	GPIO_CLR = 1 << STB;
@@ -108,35 +207,18 @@ void configure()
 		GPIO_CLR = 1 << DATA[iter];
     }
 
-    GPIO_SET = 1 << BUS_DIR; //write a 1 to the GPIOSET1 register bit 5
+    GPIO_SET = 1 << WRITE; //write a 1 to the GPIOSET1 register bit 5
     GPIO_CLR = 1 << RST_L; //bring RST low to force oneshot state low
 	usleep(1000); //hold RST low for 1 ms
     GPIO_SET = 1 << RST_L; //bring RST high to enable oneshot
 }
 
-void cleanup_gpio()
+void rpi_cleanup_gpio()
 {
 	for(iter = 0; iter < 32; iter++)
 	{
 		GPIO_CLR = 1 << iter;
 		INP_GPIO(iter);
 	}
-}
-
-int main()
-{
-    setup_io();
-    configure();
-
-	for(iter = 0; iter < 8; iter++)
-	{
-		GPIO_SET = 1 << DATA[iter];
-		delay_ns(1000);
-		GPIO_CLR = 1 << DATA[iter];	
-	}
-
-	cleanup_gpio();
-		
-    return(0);
 }
 

@@ -2,8 +2,7 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <cfd_rpi.h>
-#include <unistd.h>
-#include <stdio.h>
+#include <sched.h>
 #include <stdlib.h>
 
 /* Setup GTK Object handles for each widget */
@@ -339,7 +338,7 @@ void on_AGND_Trim_Menu_changed()
 	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(agnd_box));
 	agnd_trim = (char)index;
 
-	g_printf("AGND trim menu changed: %s\n", val);
+	g_printf("AGND trim menu changed: %s\n Index = %d\n", val, index);
 }
 
 /* Master callback for all ChannelX_CB callbacks. Print message and toggle
@@ -405,7 +404,7 @@ void on_Channel9_EN_CB_toggled()
 	channel_enable_event(9);
 }
 
-void on_Channel10_EN_CB_toggled()
+void on_Channel10_EN_CB_toggledi()
 {
 	channel_enable_event(10);
 }
@@ -439,7 +438,20 @@ void on_Channel15_EN_CB_toggled()
 */
 void on_Configure_Button_clicked()
 {
+	char addr_dat = 0;
 	printf("Configure button clicked\n");
+
+	set_gen(gen);
+	set_polarity(neg_pol);
+	set_internal_agnd(int_agnd_en);
+
+	//Configure common channel registers.
+	addr_dat |= (angd_trim) << 2;
+	
+
+
+	//Configure channel registers.	
+
 }
 
 /* When Save_Config is clicked, open a file using named specified in the
@@ -641,6 +653,7 @@ void on_Load_Config_Button_clicked()
 */
 void on_window_main_destroy()
 {
+	rpi_cleanup_gpio();
     gtk_main_quit();
 }
 
@@ -649,6 +662,9 @@ int main(int argc, char *argv[])
 {
     GtkBuilder      *builder;
     GtkWidget       *window;
+	struct sched_param sp;
+	sp.sched_priority = 50;
+	sched_setscheduler(getpid(), SCHED_FIFO, &sp);
 
     gtk_init(&argc, &argv);
 
@@ -755,6 +771,12 @@ int main(int argc, char *argv[])
 
     gtk_widget_show(window);
     printf("show returned\n");
+
+	printf("Resetting GPIO states and applying RST_L pulse\n");
+
+	rpi_setup_io();
+	rpi_configure();
+
     gtk_main();
 
     return 0;
