@@ -12,6 +12,8 @@ GtkWidget *GEN_CB_h;
 GtkWidget *GMode_CB_h;
 GtkWidget *Neg_Pol_CB_h;
 GtkWidget *Internal_AGND_CB_h;
+GtkWidget *CFD_PW_Menu_h;
+GtkWidget *TP_Channel_Menu_h;
 
 //global settings combo boxes/text boxes
 GtkWidget *Nowlin_Mode_Menu_h;
@@ -79,7 +81,8 @@ char lockout_mode;
 char test_point_sel;
 unsigned int lockout_dac;
 char ch_en[CHANNELS]; //individual channel enable flags
-
+char tp_channel;
+char cfd_pw;
 
 
 /* Callback functions */
@@ -434,6 +437,28 @@ void on_Channel15_EN_CB_toggled()
 	channel_enable_event(15);
 }
 
+void on_CFD_PW_Menu_changed()
+{
+	GtkComboBoxText* pwbox = GTK_COMBO_BOX_TEXT(CFD_PW_Menu_h);
+	
+	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(pwbox));
+	gchar* pw = gtk_combo_box_text_get_active_text(pwbox);
+
+	cfd_pw = (char)index;	
+
+	g_printf("CFD pulse width changed: %s ns\n", pw);
+}
+
+void on_TP_Channel_Menu_changed()
+{
+	GtkComboBoxText* tpbox = GTK_COMBO_BOX_TEXT(TP_Channel_Menu_h);
+	
+	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(tpbox));
+	tp_channel = (char)index;	
+
+	g_printf("Test point channel changed: channel %d\n", tp_channel);
+}
+
 /* When Configure_Button is clicked, TODO: configure chip
 */
 void on_Configure_Button_clicked()
@@ -446,12 +471,113 @@ void on_Configure_Button_clicked()
 	set_internal_agnd(int_agnd_en);
 
 	//Configure common channel registers.
-	addr_dat |= (angd_trim) << 2;
 	
+	//select mode 1
+	strobe_low();
+	delay_ns(500);
+	
+	addr_dat = (gmode << 3) | 1;
+	set_addr_mode(addr_dat >> 4, addr_dat & 0x0f);
+	delay_ns(500);
+	
+	strobe_high();
+	delay_ns(500);
+	addr_dat = 0;	
 
+	addr_dat |= (agnd_trim << 2);
+	addr_dat |= cfd_pw;
+	if(lockout_mode != LOCKOUT_DISABLED)
+	{
+		addr_dat |= (lockout_mode << 5);
+	}	
 
-	//Configure channel registers.	
+	set_data(addr_dat);	
 
+	strobe_low();
+	delay_ns(500);
+	addr_dat = 0;
+
+	//select mode 0
+	addr_dat = (gmode << 3);
+	set_addr_mode(addr_dat >> 4, addr_dat & 0x0f);
+	delay_ns(500);
+	
+	strobe_high();	
+	delay_ns(500);
+
+	addr_dat = 0;
+	addr_dat |= nowlin_delay;
+	addr_dat |= (test_point_sel << 4);
+	addr_dat |= nowlin_mode << 7;
+	
+	set_data(addr_dat);
+	delay_ns(500);
+	strobe_low();
+
+	//select mode 5
+	addr_dat = 0;
+	addr_dat = (gmode << 3) | 5;
+	set_addr_mode(addr_dat >> 4, addr_dat & 0x0f);
+	delay_ns(500);
+
+	strobe_high();
+	delay_ns(500);	
+
+	addr_dat = 0;
+	addr_dat = lockout_dac;
+	
+	if(lockout_mode == LOCKOUT_DISABLED)
+	{
+		addr_dat |= (0 << 5);
+	}
+	else
+	{
+		addr_dat |= (1 << 5);
+	}
+	
+	set_data(addr_dat);
+	delay_ns(500);
+	strobe_low();
+	delay_ns(500);
+	
+	int iter = 0;
+	
+	do
+	{
+		//Configure channel registers.	
+		//set mode 6
+		addr_dat = 0;
+		addr_dat = (gmode << 3) | 6;
+		set_addr_mode(addr_dat >> 4, addr_dat & 0x0f);
+		delay_ns(500);
+	
+		strobe_high();
+		delay_ns(500);
+
+		//set data for channel
+		addr_dat = 0;
+		addr_dat = leading_edge_dac[iter];
+		addr_dat |= (ch_en[iter] << 6);
+		set_data(addr_dat);
+		delay_ns(500);
+
+		strobe_low();
+		delay_ns(500);		
+		iter++;	
+	
+		if(iter >= 15) break;
+	
+	} while(!gmode);
+
+	//set test point addr. mode = unused
+	set_addr_mode(tp_channel, 3);
+	delay_ns(500);
+	strobe_high();
+	delay_ns(500);
+	strobe_low();
+
+	printf("Configuration done!\n");
+	
 }
 
 /* When Save_Config is clicked, open a file using named specified in the
@@ -477,7 +603,8 @@ void on_Save_Config_Button_clicked()
 	fwrite(&nowlin_mode, sizeof(nowlin_mode), 1, fd);
 	fwrite(&nowlin_delay, sizeof(nowlin_delay), 1, fd);
 	fwrite(&lockout_mode, sizeof(lockout_mode), 1, fd);
-	
+	fwrite(&cfd_pw, sizeof(cfd_pw), 1, fd);
+	fwrite(&tp_channel, sizeof(tp_channel), 1, fd);
 
 	if(lockout_mode != LOCKOUT_DISABLED)
 	{
@@ -558,6 +685,12 @@ void on_Load_Config_Button_clicked()
 
 	fread(&lockout_mode, sizeof(lockout_mode), 1, fd);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(Lockout_Mode_Menu_h), lockout_mode);
+
+	fread(&cfd_pw, sizeof(cfd_pw), 1, fd);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(CFD_PW_Menu_h), cfd_pw);
+	
+	fread(&tp_channel, sizeof(tp_channel), 1, fd);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(TP_Channel_Menu_h), tp_channel);
 
 	if(lockout_mode != LOCKOUT_DISABLED)
 	{
@@ -685,6 +818,8 @@ int main(int argc, char *argv[])
 	Lockout_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Lockout_DAC_Box"));
 	AGND_Trim_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "AGND_Trim_Menu"));
 
+	CFD_PW_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "CFD_PW_Menu"));
+	TP_Channel_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "TP_Channel_Menu"));
 
 	Channel0_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel0_EN_CB"));
 	Channel0_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel0_LE_DAC_Box"));
