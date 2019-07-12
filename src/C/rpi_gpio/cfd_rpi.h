@@ -106,4 +106,5 @@ void set_internal_agnd(char val);
 void pulse_rst_l(void);
 void set_polarity(char pol);
 void set_gen(char val);
-
+void set_write(void);
+void set_read(void);

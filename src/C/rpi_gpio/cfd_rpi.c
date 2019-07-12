@@ -21,9 +21,18 @@ const unsigned char RST_L = 12; //low active reset -- ensures one-shot works pro
 
 int iter; //iterator for loops
 
-void set_addr_mode(char addr, char mode)
+void set_write()
 {
 	GPIO_SET = 1 << WRITE;
+}
+
+void set_read()
+{
+	GPIO_CLR = 1 << WRITE;
+}
+
+void set_addr_mode(char addr, char mode)
+{
 	
 	for(iter = 0; iter < MODE_BITS; iter++)
 	{
@@ -46,12 +55,10 @@ void set_addr_mode(char addr, char mode)
 		}	
 	}
 	
-	GPIO_CLR = 1 << WRITE;
 }
 
 void set_data(char data)
 {
-	GPIO_SET = 1 << WRITE;
 	
 	for(iter = 0; iter < DATA_BITS; iter++)
 	{

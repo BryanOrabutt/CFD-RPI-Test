@@ -68,6 +68,9 @@ GtkWidget *Load_Config_Button_h;
 //config button
 GtkWidget *Confiure_Button_h;
 
+//RST_L button
+GtkWidget *RST_Button_h;
+
 /* Global variables */
 unsigned int leading_edge_dac[CHANNELS]; //value to write to individual channel
 char gmode;
@@ -469,6 +472,7 @@ void on_Configure_Button_clicked()
 	set_gen(gen);
 	set_polarity(neg_pol);
 	set_internal_agnd(int_agnd_en);
+	set_write();
 
 	//Configure common channel registers.
 	
@@ -476,8 +480,8 @@ void on_Configure_Button_clicked()
 	strobe_low();
 	delay_ns(500);
 	
-	addr_dat = (gmode << 3) | 1;
-	set_addr_mode(addr_dat >> 4, addr_dat & 0x0f);
+	addr_dat = 1;
+	set_data(addr_dat);
 	delay_ns(500);
 	
 	strobe_high();
@@ -492,14 +496,14 @@ void on_Configure_Button_clicked()
 	}	
 
 	set_data(addr_dat);	
+	delay_ns(500);	
 
 	strobe_low();
 	delay_ns(500);
 	addr_dat = 0;
 
 	//select mode 0
-	addr_dat = (gmode << 3);
-	set_addr_mode(addr_dat >> 4, addr_dat & 0x0f);
+	set_data(addr_dat);
 	delay_ns(500);
 	
 	strobe_high();	
@@ -515,9 +519,8 @@ void on_Configure_Button_clicked()
 	strobe_low();
 
 	//select mode 5
-	addr_dat = 0;
-	addr_dat = (gmode << 3) | 5;
-	set_addr_mode(addr_dat >> 4, addr_dat & 0x0f);
+	addr_dat =  5;
+	set_data(addr_dat);
 	delay_ns(500);
 
 	strobe_high();
@@ -546,9 +549,8 @@ void on_Configure_Button_clicked()
 	{
 		//Configure channel registers.	
 		//set mode 6
-		addr_dat = 0;
 		addr_dat = (gmode << 3) | 6;
-		set_addr_mode(addr_dat >> 4, addr_dat & 0x0f);
+		set_data(addr_dat);
 		delay_ns(500);
 	
 		strobe_high();
@@ -575,6 +577,9 @@ void on_Configure_Button_clicked()
 	strobe_high();
 	delay_ns(500);
 	strobe_low();
+	delay_ns(500);
+
+	set_read();
 
 	printf("Configuration done!\n");
 	
@@ -782,6 +787,12 @@ void on_Load_Config_Button_clicked()
 	g_printf("Loaded configuration from file: %s\n", filename);
 }
 
+void on_RST_Button_clicked()
+{
+	printf("Applying RST_L for 5 us\n");
+	pulse_rst_l();	
+}
+
 /* When main window is closed, exit program 
 */
 void on_window_main_destroy()
@@ -873,6 +884,7 @@ int main(int argc, char *argv[])
 	Load_File_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Load_File_Name_Box"));
 	Save_Config_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "Save_Config_Button"));
 	Load_Config_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "Load_Config_Button"));
+	RST_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "RST_Button"));
 
 	/* Set default values for configuration */
 	gen = 1; //enable chip

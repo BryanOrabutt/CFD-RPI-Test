@@ -1671,14 +1671,16 @@
           </packing>
         </child>
         <child>
-          <object class="GtkSeparator">
+          <object class="GtkButton" id="RST_Button">
+            <property name="label" translatable="yes">Pulse RST_L</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_RST_Button_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">10</property>
             <property name="position">10</property>
           </packing>
         </child>
