@@ -59,6 +59,24 @@ GtkWidget *Channel13_LE_DAC_Box_h;
 GtkWidget *Channel14_LE_DAC_Box_h;
 GtkWidget *Channel15_LE_DAC_Box_h;
 
+//leading edge DAC sign bit text boxes.
+GtkWidget *Channel0_Sign_CB_h;
+GtkWidget *Channel1_Sign_CB_h;
+GtkWidget *Channel2_Sign_CB_h;
+GtkWidget *Channel3_Sign_CB_h;
+GtkWidget *Channel4_Sign_CB_h;
+GtkWidget *Channel5_Sign_CB_h;
+GtkWidget *Channel6_Sign_CB_h;
+GtkWidget *Channel7_Sign_CB_h;
+GtkWidget *Channel8_Sign_CB_h;
+GtkWidget *Channel9_Sign_CB_h;
+GtkWidget *Channel10_Sign_CB_h;
+GtkWidget *Channel11_Sign_CB_h;
+GtkWidget *Channel12_Sign_CB_h;
+GtkWidget *Channel13_Sign_CB_h;
+GtkWidget *Channel14_Sign_CB_h;
+GtkWidget *Channel15_Sign_CB_h;
+
 //Save & load interface handles
 GtkWidget *Save_File_Box_h;
 GtkWidget *Load_File_Box_h;
@@ -84,11 +102,35 @@ char lockout_mode;
 char test_point_sel;
 unsigned int lockout_dac;
 char ch_en[CHANNELS]; //individual channel enable flags
+char ch_sign[CHANNELS]; //individual channel DAC sign bit flags
 char tp_channel;
 char cfd_pw;
 
 
 /* Callback functions */
+
+/* Grabs the DAC text box values and converts to integer, storing
+*  in a variable for saving/loading/config.
+*/
+void grab_dacs()
+{
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "%i", leading_edge_dac+0);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel1_LE_DAC_Box_h)), "%i", leading_edge_dac+1);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel2_LE_DAC_Box_h)), "%i", leading_edge_dac+2);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel3_LE_DAC_Box_h)), "%i", leading_edge_dac+3);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel4_LE_DAC_Box_h)), "%i", leading_edge_dac+4);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel5_LE_DAC_Box_h)), "%i", leading_edge_dac+5);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel6_LE_DAC_Box_h)), "%i", leading_edge_dac+6);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel7_LE_DAC_Box_h)), "%i", leading_edge_dac+7);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel8_LE_DAC_Box_h)), "%i", leading_edge_dac+8);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel9_LE_DAC_Box_h)), "%i", leading_edge_dac+9);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel10_LE_DAC_Box_h)), "%i", leading_edge_dac+10);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel11_LE_DAC_Box_h)), "%i", leading_edge_dac+11);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel12_LE_DAC_Box_h)), "%i", leading_edge_dac+12);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel13_LE_DAC_Box_h)), "%i", leading_edge_dac+13);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel14_LE_DAC_Box_h)), "%i", leading_edge_dac+14);
+	sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel15_LE_DAC_Box_h)), "%i", leading_edge_dac+15);
+}
 
 /* When GEN is toggled, change the gen variable and print a message */
 void on_GEN_CB_toggled()
@@ -347,7 +389,7 @@ void on_AGND_Trim_Menu_changed()
 	g_printf("AGND trim menu changed: %s\n Index = %d\n", val, index);
 }
 
-/* Master callback for all ChannelX_CB callbacks. Print message and toggle
+/* Master callback for all ChannelX_EN_CB callbacks. Print message and toggle
  * the ch_en variable for the channel
 */
 void channel_enable_event(int channel)
@@ -440,6 +482,103 @@ void on_Channel15_EN_CB_toggled()
 	channel_enable_event(15);
 }
 
+/* Master callback for all ChannelX_Sign_CB callbacks. Print message and toggle
+ * the ch_en variable for the channel
+*/
+void channel_sign_event(int channel)
+{
+	printf("Channel%i DAC sign bit toggled\n", channel);
+
+	ch_sign[channel] ^= 1;	
+
+	printf("ch_sign[%d]: %d\n", channel, ch_sign[channel]);
+
+}
+
+void on_Channel0_Sign_CB_toggled()
+{
+	channel_sign_event(0);
+}
+
+void on_Channel1_Sign_CB_toggled()
+{
+	channel_sign_event(1);
+}
+
+void on_Channel2_Sign_CB_toggled()
+{
+	channel_sign_event(2);
+}
+
+void on_Channel3_Sign_CB_toggled()
+{
+	channel_sign_event(3);
+}
+
+void on_Channel4_Sign_CB_toggled()
+{
+	channel_sign_event(4);
+
+}
+
+void on_Channel5_Sign_CB_toggled()
+{
+	channel_sign_event(5);
+}
+
+void on_Channel6_Sign_CB_toggled()
+{
+	channel_sign_event(6);
+}
+
+void on_Channel7_Sign_CB_toggled()
+{
+	channel_sign_event(7);
+}
+
+void on_Channel8_Sign_CB_toggled()
+{
+	channel_sign_event(8);
+}
+
+void on_Channel9_Sign_CB_toggled()
+{
+	channel_sign_event(9);
+}
+
+void on_Channel10_Sign_CB_toggledi()
+{
+	channel_sign_event(10);
+}
+
+void on_Channel11_Sign_CB_toggled()
+{
+	channel_sign_event(11);
+}
+
+void on_Channel12_Sign_CB_toggled()
+{
+	channel_sign_event(12);
+}
+
+void on_Channel13_Sign_CB_toggled()
+{
+	channel_sign_event(13);
+}
+
+void on_Channel14_Sign_CB_toggled()
+{
+	channel_sign_event(14);
+}
+
+void on_Channel15_Sign_CB_toggled()
+{
+	channel_sign_event(15);
+}
+
+/* When CFD pulse width menu changes, save index into variable and 
+*  print debug message.
+*/
 void on_CFD_PW_Menu_changed()
 {
 	GtkComboBoxText* pwbox = GTK_COMBO_BOX_TEXT(CFD_PW_Menu_h);
@@ -452,6 +591,9 @@ void on_CFD_PW_Menu_changed()
 	g_printf("CFD pulse width changed: %s ns\n", pw);
 }
 
+/* When Test Point menu changes, save test point index into variable
+*  and print debug message.
+*/
 void on_TP_Channel_Menu_changed()
 {
 	GtkComboBoxText* tpbox = GTK_COMBO_BOX_TEXT(TP_Channel_Menu_h);
@@ -462,7 +604,9 @@ void on_TP_Channel_Menu_changed()
 	g_printf("Test point channel changed: channel %d\n", tp_channel);
 }
 
-/* When Configure_Button is clicked, TODO: configure chip
+/* When Configure_Button is clicked the CFD chip will be configured.
+*  Config starts with common channel (mode 1, mode 0, and mode 5).
+*  Config ends with signal channel DAC register (mode 6)
 */
 void on_Configure_Button_clicked()
 {
@@ -544,6 +688,7 @@ void on_Configure_Button_clicked()
 	delay_ns(500);
 	
 	int iter = 0;
+	grab_dacs(); //get dac box data
 	
 	do
 	{
@@ -558,7 +703,11 @@ void on_Configure_Button_clicked()
 
 		//set data for channel
 		addr_dat = 0;
+
+		leading_edge_dac[iter] &= 0x1f; //clear top 3 MSBs since they should not be used.
+
 		addr_dat = leading_edge_dac[iter];
+		addr_dat |= (ch_sign[iter] << 5);
 		addr_dat |= (ch_en[iter] << 6);
 		set_data(addr_dat);
 		delay_ns(500);
@@ -590,10 +739,12 @@ void on_Configure_Button_clicked()
 */
 void on_Save_Config_Button_clicked()
 {
-	GtkEntry* save_file = GTK_ENTRY(Save_File_Box_h);
-	const gchar* filename = gtk_entry_get_text(save_file);
+	GtkEntry* save_file = GTK_ENTRY(Save_File_Box_h); //GTK object handle for save text box
+	const gchar* filename = gtk_entry_get_text(save_file); //get file name from text box
 
-	FILE* fd = fopen((const char*)filename, "w");
+	
+	/* Open file for writing and verify no errors */
+	FILE* fd = fopen((const char*)filename, "w"); 
 
 	if(!fd)
 	{
@@ -601,6 +752,7 @@ void on_Save_Config_Button_clicked()
 		exit(EXIT_FAILURE);
 	}
 
+	/* Write configuration to file */
 	fwrite(&gen, sizeof(gen), 1, fd);
 	fwrite(&neg_pol, sizeof(neg_pol), 1, fd);
 	fwrite(&int_agnd_en, sizeof(int_agnd_en), 1, fd);
@@ -613,7 +765,7 @@ void on_Save_Config_Button_clicked()
 
 	if(lockout_mode != LOCKOUT_DISABLED)
 	{
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Lockout_DAC_Box_h)), "0x%02X", &lockout_dac);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Lockout_DAC_Box_h)), "%i", &lockout_dac);
 		fwrite(&lockout_dac, sizeof(lockout_dac), 1, fd);
 	}
 
@@ -622,31 +774,18 @@ void on_Save_Config_Button_clicked()
 	
 	if(gmode)
 	{
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "0x%02X", leading_edge_dac);
+		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "%i", leading_edge_dac);
 		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), 1, fd);
 	}
 	else
 	{
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel0_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+0);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel1_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+1);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel2_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+2);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel3_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+3);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel4_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+4);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel5_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+5);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel6_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+6);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel7_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+7);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel8_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+8);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel9_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+9);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel10_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+10);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel11_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+11);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel12_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+12);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel13_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+13);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel14_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+14);
-		sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Channel15_LE_DAC_Box_h)), "0x%02X", leading_edge_dac+15);
+		grab_dacs();
 		fwrite(leading_edge_dac, sizeof(leading_edge_dac[0]), CHANNELS, fd);
 	}
 
 	fwrite(ch_en, sizeof(ch_en[0]), CHANNELS, fd);
+	fwrite(ch_sign, sizeof(ch_sign[0]), CHANNELS, fd);
+	/* done writing */
 
 	fclose(fd);
 
@@ -658,9 +797,10 @@ void on_Save_Config_Button_clicked()
 */
 void on_Load_Config_Button_clicked()
 {
-	GtkEntry* load_file = GTK_ENTRY(Load_File_Box_h);
-	const gchar* filename = gtk_entry_get_text(load_file);
+	GtkEntry* load_file = GTK_ENTRY(Load_File_Box_h); //GTK object handle for load text box
+	const gchar* filename = gtk_entry_get_text(load_file); //read file name from text box
 	
+	/* Attempt to open file for read */
 	FILE* fd = fopen((const char*)filename, "r");
 	gchar str[7];
 
@@ -670,6 +810,7 @@ void on_Load_Config_Button_clicked()
 		exit(EXIT_FAILURE);
 	}
 
+	/* Load configuration data and update GUI */
 	fread(&gen, sizeof(gen), 1, fd);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GEN_CB_h), gen);	
 
@@ -763,7 +904,6 @@ void on_Load_Config_Button_clicked()
 
 	fread(ch_en, sizeof(ch_en[0]), CHANNELS, fd);
 
-
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel0_EN_CB_h), ch_en[0]);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel1_EN_CB_h), ch_en[1]);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel2_EN_CB_h), ch_en[2]);
@@ -782,11 +922,32 @@ void on_Load_Config_Button_clicked()
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel15_EN_CB_h), ch_en[15]);
 
 
+	fread(ch_sign, sizeof(ch_sign[0]), CHANNELS, fd);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel0_Sign_CB_h), ch_sign[0]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel1_Sign_CB_h), ch_sign[1]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel2_Sign_CB_h), ch_sign[2]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel3_Sign_CB_h), ch_sign[3]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel4_Sign_CB_h), ch_sign[4]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel5_Sign_CB_h), ch_sign[5]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel6_Sign_CB_h), ch_sign[6]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel7_Sign_CB_h), ch_sign[7]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel8_Sign_CB_h), ch_sign[8]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel9_Sign_CB_h), ch_sign[9]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel10_Sign_CB_h), ch_sign[10]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel11_Sign_CB_h), ch_sign[11]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel12_Sign_CB_h), ch_sign[12]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel13_Sign_CB_h), ch_sign[13]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel14_Sign_CB_h), ch_sign[14]);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Channel15_Sign_CB_h), ch_sign[15]);
+	/* end loading config */
+
 	fclose(fd);
 	
 	g_printf("Loaded configuration from file: %s\n", filename);
 }
 
+/* Applys a 5 us low active reset pulse when button is clicked */
 void on_RST_Button_clicked()
 {
 	printf("Applying RST_L for 5 us\n");
@@ -798,24 +959,27 @@ void on_RST_Button_clicked()
 void on_window_main_destroy()
 {
 	rpi_cleanup_gpio();
-    gtk_main_quit();
+	gtk_main_quit();
 }
 
 
 int main(int argc, char *argv[])
 {
-    GtkBuilder      *builder;
-    GtkWidget       *window;
+	GtkBuilder      *builder;
+	GtkWidget       *window;
 	struct sched_param sp;
 	sp.sched_priority = 50;
 	sched_setscheduler(getpid(), SCHED_FIFO, &sp);
 
-    gtk_init(&argc, &argv);
+	gtk_init(&argc, &argv);
 
-    builder = gtk_builder_new();
-    gtk_builder_add_from_file (builder, "CFD.glade", NULL);
+	/* Create a builder object to read the XML file */
+	builder = gtk_builder_new();
+	gtk_builder_add_from_file (builder, "CFD.glade", NULL);
 
-    window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
+	
+	/* Using builder object, create an object handle for each GUI element */
+	window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
 
 	GEN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "GEN_CB"));
 	GMode_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "GMode_CB"));
@@ -834,57 +998,74 @@ int main(int argc, char *argv[])
 
 	Channel0_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel0_EN_CB"));
 	Channel0_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel0_LE_DAC_Box"));
+	Channel0_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel0_Sign_CB"));
 
 	Channel1_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel1_EN_CB"));
 	Channel1_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel1_LE_DAC_Box"));
+	Channel1_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel1_Sign_CB"));
 
 	Channel2_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel2_EN_CB"));
 	Channel2_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel2_LE_DAC_Box"));
+	Channel2_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel2_Sign_CB"));
 
 	Channel3_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel3_EN_CB"));
 	Channel3_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel3_LE_DAC_Box"));
+	Channel3_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel3_Sign_CB"));
 
 	Channel4_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel4_EN_CB"));
 	Channel4_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel4_LE_DAC_Box"));
+	Channel4_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel4_Sign_CB"));
 
 	Channel5_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel5_EN_CB"));
 	Channel5_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel5_LE_DAC_Box"));
+	Channel5_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel5_Sign_CB"));
 
 	Channel6_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel6_EN_CB"));
 	Channel6_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel6_LE_DAC_Box"));
+	Channel6_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel6_Sign_CB"));
 
 	Channel7_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel7_EN_CB"));
 	Channel7_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel7_LE_DAC_Box"));
+	Channel7_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel7_Sign_CB"));
 
 	Channel8_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel8_EN_CB"));
 	Channel8_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel8_LE_DAC_Box"));
+	Channel8_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel8_Sign_CB"));
 
 	Channel9_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel9_EN_CB"));
 	Channel9_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel9_LE_DAC_Box"));
+	Channel9_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel9_Sign_CB"));
 
 	Channel10_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel10_EN_CB"));
 	Channel10_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel10_LE_DAC_Box"));
+	Channel10_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel10_Sign_CB"));
 
 	Channel11_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel11_EN_CB"));
 	Channel11_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel11_LE_DAC_Box"));
+	Channel11_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel11_Sign_CB"));
 
 	Channel12_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel12_EN_CB"));
 	Channel12_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel12_LE_DAC_Box"));
+	Channel12_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel12_Sign_CB"));
 
 	Channel13_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel13_EN_CB"));
 	Channel13_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel13_LE_DAC_Box"));
+	Channel13_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel13_Sign_CB"));
 
 	Channel14_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel14_EN_CB"));
 	Channel14_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel14_LE_DAC_Box"));
+	Channel14_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel14_Sign_CB"));
 
 	Channel15_EN_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel15_EN_CB"));
 	Channel15_LE_DAC_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel15_LE_DAC_Box"));
+	Channel15_Sign_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Channel15_Sign_CB"));
 
 	Save_File_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Save_File_Name_Box"));
 	Load_File_Box_h = GTK_WIDGET(gtk_builder_get_object(builder, "Load_File_Name_Box"));
 	Save_Config_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "Save_Config_Button"));
 	Load_Config_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "Load_Config_Button"));
 	RST_Button_h = GTK_WIDGET(gtk_builder_get_object(builder, "RST_Button"));
+	/* end GUI building */
 
 	/* Set default values for configuration */
 	gen = 1; //enable chip
@@ -902,29 +1083,33 @@ int main(int argc, char *argv[])
 	{
 		ch_en[i] = 1; //by default enable all channels
 		leading_edge_dac[i] = 0; //by default all DACs loaded with 0
+		ch_sign[i] = 0; //sign bit off by default.
 	}
 
 
+	/* Set lockout DAC default state */
 	GtkEntry* lockout_dac = GTK_ENTRY(Lockout_DAC_Box_h);	
 	gtk_entry_set_text(lockout_dac, "N/A");
 	gtk_editable_set_editable(GTK_EDITABLE(lockout_dac), 0);
 	gtk_widget_set_can_focus(Lockout_DAC_Box_h, 0);
 
-    gtk_builder_connect_signals(builder, NULL);
-    printf("connect returned\n");
+	/* Connect signal handlers for GUI */
+	gtk_builder_connect_signals(builder, NULL);
+	printf("connect returned\n");
 
-    g_object_unref(builder);
-    printf("unref returned\n");
+	g_object_unref(builder);
+	printf("unref returned\n");
 
-    gtk_widget_show(window);
-    printf("show returned\n");
+	gtk_widget_show(window);
+	printf("show returned\n");
 
 	printf("Resetting GPIO states and applying RST_L pulse\n");
 
+	/* Set GPIO to default states */
 	rpi_setup_io();
 	rpi_configure();
 
-    gtk_main();
+	gtk_main();
 
-    return 0;
+	return 0;
 }
