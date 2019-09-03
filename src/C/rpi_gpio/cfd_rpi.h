@@ -76,8 +76,8 @@ volatile unsigned *gpio;
 
 /* Lockout modes */
 #define LOCKOUT_DISABLED	2
-#define LOCKOUT_SHORT		0
-#define LOCKOUT_LONG		1
+#define LOCKOUT_SHORT		1
+#define LOCKOUT_LONG		0
 
 /* Nowlin Modes */
 #define NOWLIN_SHORT	0

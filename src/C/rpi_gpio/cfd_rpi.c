@@ -9,7 +9,8 @@
 #include <sched.h>
 
 //Pin accessors
-const unsigned char DATA[8] = {5,6,13,19,26,16,20,21}; //data bus -- used to load configuration registers
+//const unsigned char DATA[8] = {5,6,13,19,26,16,20,21}; //data bus -- used to load
+const unsigned char DATA[8] = {21,20,16,26,19,13,6,5}; //data bus -- used to load configuration registers
 const unsigned char ADDR[4] = {5,6,13,19}; //address bus -- just an alias of the upper nibble of the data bus
 const unsigned char MODE[4] = {26,16,20,21}; //mode bus -- just an alias of the lower nibble of the data bus
 const unsigned char NEG_POL = 7; //negative polarity enable -- POS,NEG = 0,1

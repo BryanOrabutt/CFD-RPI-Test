@@ -293,6 +293,7 @@ void on_Nowlin_Mode_Menu_changed()
 
 	nowlin_mode = (char)gtk_combo_box_get_active(GTK_COMBO_BOX(modebox));
 	int scale = (nowlin_mode == NOWLIN_LONG) ? 12:1;
+	nowlin_mode = (nowlin_mode == NOWLIN_LONG) ? 0:1;
 	printf("Nowlin mode changed to: %s\n", (nowlin_mode == NOWLIN_SHORT) ? "SHORT":"LONG");
 
 	for(int i = 0; i < CHANNELS; i++)
@@ -316,9 +317,9 @@ void on_Nowlin_Delay_Menu_changed()
 	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(delaybox));
 	gchar* delay = gtk_combo_box_text_get_active_text(delaybox);
 
-	nowlin_delay = (char)index;	
+	nowlin_delay = (char)index;
 
-	g_printf("Nowlin delay menu changed: %s ns\n", delay);
+	g_printf("Nowlin delay menu changed: %s ns\tIndex: %d\n", delay, nowlin_delay);
 }
 
 /* When Test_Poin menu changes, save tp menu index into test_point_sel
@@ -331,8 +332,9 @@ void on_Test_Point_Menu_changed()
 
 	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(tp_box));
 	test_point_sel = (char)index;
+	if(test_point_sel == 4) test_point_sel = 5;
 
-	g_printf("Test point menu changed: %s\n", tp);
+	g_printf("Test point menu changed: %s\tIndex: %d\n", tp, test_point_sel);
 }
 
 /* When Lockout_Mode menu changes, determine the mode it changed to.
@@ -360,7 +362,7 @@ void on_Lockout_Mode_Menu_changed()
 		gtk_entry_set_text(lockout_dac, "");
 		gtk_editable_set_editable(GTK_EDITABLE(lockout_dac), 1);
 		gtk_widget_set_can_focus(Lockout_DAC_Box_h, 1);
-		lockout_mode = LOCKOUT_SHORT;
+		lockout_mode = 1;
 		str = "SHORT";
 	}
 	else
@@ -368,7 +370,7 @@ void on_Lockout_Mode_Menu_changed()
 		gtk_entry_set_text(lockout_dac, "");
 		gtk_editable_set_editable(GTK_EDITABLE(lockout_dac), 1);
 		gtk_widget_set_can_focus(Lockout_DAC_Box_h, 1);
-		lockout_mode = LOCKOUT_LONG;
+		lockout_mode = 0;
 		str = "LONG";
 	}
 
@@ -452,7 +454,7 @@ void on_Channel9_EN_CB_toggled()
 	channel_enable_event(9);
 }
 
-void on_Channel10_EN_CB_toggledi()
+void on_Channel10_EN_CB_toggled()
 {
 	channel_enable_event(10);
 }
@@ -546,7 +548,7 @@ void on_Channel9_Sign_CB_toggled()
 	channel_sign_event(9);
 }
 
-void on_Channel10_Sign_CB_toggledi()
+void on_Channel10_Sign_CB_toggled()
 {
 	channel_sign_event(10);
 }
@@ -616,7 +618,7 @@ void on_Configure_Button_clicked()
 	set_gen(gen);
 	set_polarity(neg_pol);
 	set_internal_agnd(int_agnd_en);
-	set_write();
+	//set_write();
 
 	//Configure common channel registers.
 	
@@ -655,6 +657,7 @@ void on_Configure_Button_clicked()
 
 	addr_dat = 0;
 	addr_dat |= nowlin_delay;
+	
 	addr_dat |= (test_point_sel << 4);
 	addr_dat |= nowlin_mode << 7;
 	
@@ -671,11 +674,19 @@ void on_Configure_Button_clicked()
 	delay_ns(500);	
 
 	addr_dat = 0;
+	int res = sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Lockout_DAC_Box_h)), "%i", &lockout_dac);
+	
+	if(!res)
+		lockout_dac = 1;
+		
 	addr_dat = lockout_dac;
 	
+	int tmp = 0;
 	if(lockout_mode == LOCKOUT_DISABLED)
 	{
-		addr_dat |= (0 << 5);
+		tmp = 1 << 5;
+		tmp = ~tmp;
+		addr_dat &= tmp;
 	}
 	else
 	{
@@ -694,7 +705,10 @@ void on_Configure_Button_clicked()
 	{
 		//Configure channel registers.	
 		//set mode 6
-		addr_dat = (gmode << 3) | 6;
+		addr_dat = (gmode << 3);
+		addr_dat |= 6;
+		addr_dat |= (iter << 4);
+		printf("addr_mode = 0x%02X\n", addr_dat);
 		set_data(addr_dat);
 		delay_ns(500);
 	
@@ -710,25 +724,35 @@ void on_Configure_Button_clicked()
 		addr_dat |= (ch_sign[iter] << 5);
 		addr_dat |= (ch_en[iter] << 6);
 		set_data(addr_dat);
+		printf("data = 0x%02X\n", addr_dat);
 		delay_ns(500);
 
 		strobe_low();
 		delay_ns(500);		
 		iter++;	
+		
+		printf("iter = %d\n", iter);
 	
-		if(iter >= 15) break;
+		if(iter > 15) break;
 	
 	} while(!gmode);
 
 	//set test point addr. mode = unused
-	set_addr_mode(tp_channel, 3);
+	//set_addr_mode(tp_channel, 3);
+	//set_data(tp_channel << 4);
+	addr_dat = tp_channel << 4;
+	addr_dat |= 2;
+	set_data(addr_dat);
 	delay_ns(500);
 	strobe_high();
+	set_data(0);
 	delay_ns(500);
 	strobe_low();
 	delay_ns(500);
 
-	set_read();
+	//set_read();
+	
+	//gmode on = 5 strobes, off = 19 strobes
 
 	printf("Configuration done!\n");
 	
@@ -1108,6 +1132,10 @@ int main(int argc, char *argv[])
 	/* Set GPIO to default states */
 	rpi_setup_io();
 	rpi_configure();
+	set_write();
+	int addr_dat = 0xaa;
+	set_data(addr_dat);
+	
 
 	gtk_main();
 
