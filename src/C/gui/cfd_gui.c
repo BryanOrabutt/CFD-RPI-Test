@@ -14,6 +14,7 @@ GtkWidget *Neg_Pol_CB_h;
 GtkWidget *Internal_AGND_CB_h;
 GtkWidget *CFD_PW_Menu_h;
 GtkWidget *TP_Channel_Menu_h;
+GtkWidget *LE_Out_Enable_CB_h;
 
 //global settings combo boxes/text boxes
 GtkWidget *Nowlin_Mode_Menu_h;
@@ -105,6 +106,7 @@ char ch_en[CHANNELS]; //individual channel enable flags
 char ch_sign[CHANNELS]; //individual channel DAC sign bit flags
 char tp_channel; //testpoint channel value
 char cfd_pw;  //CFD pulse width
+char le_out_en; //Leading Edge/Time over threshold outputs enable flag
 
 
 /* Callback functions */
@@ -139,6 +141,16 @@ void on_GEN_CB_toggled()
 	gen = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GEN_CB_h))) ? 1:0;
 	printf("GEN toggled: %s\n", (gen) ? "ON":"OFF");
 }
+
+/* Sets the flag for enabling/disabling the dedicated leading edge output pads.
+*/
+void on_LE_OUT_ENABLE_toggled()
+{
+	printf("le_out_en_cb = %p\n", LE_Out_Enable_CB_h);
+	le_out_en = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(LE_Out_Enable_CB_h))) ? 1:0;
+	printf("Leading-edge output en toggled: %s\n", (le_out_en) ? "ON":"OFF");
+}
+
 
 /* Sets the GUI state for Gmode as described in GMode_CB_toggled
  * All DAC boxes disabled except channel 0. Value entered into channel 0
@@ -695,6 +707,8 @@ void on_Configure_Button_clicked()
 		addr_dat |= (1 << 5);
 	}
 	
+	addr_dat |= (le_out_en << 6); //set leading edge output enable bit
+
 	set_data(addr_dat);
 	delay_ns(500);
 	strobe_low();
@@ -817,6 +831,7 @@ void on_Save_Config_Button_clicked()
 
 	g_printf("File saved to: %s\n", filename);
 }
+
 
 /* When Load_Config is clicked, open a file using named specified in the
  * Load_File_Box and read contents out, updating each global variable.
@@ -1012,6 +1027,7 @@ int main(int argc, char *argv[])
 	GMode_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "GMode_CB"));
 	Neg_Pol_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Neg_Pol_CB"));
 	Internal_AGND_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Internal_AGND_CB"));
+	LE_Out_Enable_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "LE_OUT_ENABLE_CB"));
 
 	Nowlin_Mode_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "Nowlin_Mode_Menu"));
 	Nowlin_Delay_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "Nowlin_Delay_Menu"));
@@ -1105,6 +1121,7 @@ int main(int argc, char *argv[])
 	lockout_mode = LOCKOUT_DISABLED; //disable lockout
 	test_point_sel = TP_AVSS; //set test point to AVSS (no test point connected)
 	lockout_dac = 0; //set lockout DAC to 0 (doesnt matter since lockout disabled)
+	le_out_en = 0;
 
 	for(int i = 0; i < CHANNELS; i++)
 	{
