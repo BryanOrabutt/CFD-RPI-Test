@@ -91,20 +91,20 @@ GtkWidget *RST_Button_h;
 
 /* Global variables */
 unsigned int leading_edge_dac[CHANNELS]; //value to write to individual channel
-char gmode;
-char neg_pol;
-char gen;
-char int_agnd_en;
-char agnd_trim;
-char nowlin_mode;
-char nowlin_delay;
-char lockout_mode;
-char test_point_sel;
-unsigned int lockout_dac;
+char gmode; //global mode flag
+char neg_pol; //negative polarity flag
+char gen; //global enable flag
+char int_agnd_en; //internal AGND enable flag
+char agnd_trim; //AGND trim bits
+char nowlin_mode; //nowlin mode bit
+char nowlin_delay; //nowlin delay value
+char lockout_mode; //lockout mode value
+char test_point_sel; //test point selection bits
+unsigned int lockout_dac; //lockout dac value
 char ch_en[CHANNELS]; //individual channel enable flags
 char ch_sign[CHANNELS]; //individual channel DAC sign bit flags
-char tp_channel;
-char cfd_pw;
+char tp_channel; //testpoint channel value
+char cfd_pw;  //CFD pulse width
 
 
 /* Callback functions */
@@ -141,6 +141,8 @@ void on_GEN_CB_toggled()
 }
 
 /* Sets the GUI state for Gmode as described in GMode_CB_toggled
+ * All DAC boxes disabled except channel 0. Value entered into channel 0
+ * DAC box will be loaded into ALL DAC registers after configuration button clicked.
 */
 void gmode_helper()
 {
@@ -615,78 +617,78 @@ void on_Configure_Button_clicked()
 	char addr_dat = 0;
 	printf("Configure button clicked\n");
 
-	set_gen(gen);
-	set_polarity(neg_pol);
-	set_internal_agnd(int_agnd_en);
-	//set_write();
+	set_gen(gen); //set global enable pin on RPI
+	set_polarity(neg_pol); //set negative polarity pin on RPI
+	set_internal_agnd(int_agnd_en); //set internal AGND enable pin on RPI
+	//set_write(); //set BUS_DIR pin on RPI
 
 	//Configure common channel registers.
 	
 	//select mode 1
-	strobe_low();
+	strobe_low(); //set STB pin on RPI to 0V
+	delay_ns(500); //delay briefly
+	
+	addr_dat = 1; //change value of addr_dat to 1 to load ADDR = 0 MODE = 1
+	set_data(addr_dat); //change state of ADDR_DAT bus pins on RPi
 	delay_ns(500);
 	
-	addr_dat = 1;
-	set_data(addr_dat);
+	strobe_high(); //STB goes to 3.3V. Rising edge latches ADDR and MODE
 	delay_ns(500);
-	
-	strobe_high();
-	delay_ns(500);
-	addr_dat = 0;	
+	addr_dat = 0;  //reset addr_dat variable to use for loading data
 
-	addr_dat |= (agnd_trim << 2);
-	addr_dat |= cfd_pw;
-	if(lockout_mode != LOCKOUT_DISABLED)
+	addr_dat |= (agnd_trim << 2); //set the AGND trim bits
+	addr_dat |= cfd_pw; //set the CFD pulse width bits
+	if(lockout_mode != LOCKOUT_DISABLED) //set lockout mode bit
 	{
 		addr_dat |= (lockout_mode << 5);
 	}	
 
-	set_data(addr_dat);	
-	delay_ns(500);	
+	set_data(addr_dat); //update state of ADDR_DAT bus on RPI
+	delay_ns(500);	 
 
-	strobe_low();
+	strobe_low(); //bring STB low to latch in data
 	delay_ns(500);
-	addr_dat = 0;
 
 	//select mode 0
-	set_data(addr_dat);
+	addr_dat = 0;
+	set_data(addr_dat);//change value of addr_dat to 0 to load ADDR = 0 MODE = 0
 	delay_ns(500);
 	
-	strobe_high();	
+	strobe_high();	//latch ADDR and MODE
 	delay_ns(500);
 
 	addr_dat = 0;
-	addr_dat |= nowlin_delay;
+	addr_dat |= nowlin_delay; //set nowlin delay bits
 	
-	addr_dat |= (test_point_sel << 4);
-	addr_dat |= nowlin_mode << 7;
+	addr_dat |= (test_point_sel << 4); //set test point selection bits
+	addr_dat |= nowlin_mode << 7; //set nowlin mode bit
 	
-	set_data(addr_dat);
+	set_data(addr_dat); //update bus on RPI
 	delay_ns(500);
-	strobe_low();
+	strobe_low(); //latch data
 
 	//select mode 5
 	addr_dat =  5;
-	set_data(addr_dat);
+	set_data(addr_dat); //changle value of addr_dat to 5 to load ADDR = 0 MODE = 5
 	delay_ns(500);
 
-	strobe_high();
+	strobe_high(); //latch ADDR and MODE
 	delay_ns(500);	
 
 	addr_dat = 0;
-	int res = sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Lockout_DAC_Box_h)), "%i", &lockout_dac);
+	int res = sscanf((char*)gtk_entry_get_text(GTK_ENTRY(Lockout_DAC_Box_h)), "%i", &lockout_dac); //read value written into LOCKOUT dac value box
 	
-	if(!res)
-		lockout_dac = 1;
+	if(!res) //if nothing is entered into lockout DAC value box
+		lockout_dac = 1; //load a 1 into lockout DAC register (can't have 0 current flowing in lockout DAC)
 		
 	addr_dat = lockout_dac;
 	
 	int tmp = 0;
-	if(lockout_mode == LOCKOUT_DISABLED)
+	if(lockout_mode == LOCKOUT_DISABLED) //if lockout is disabled in GUI
 	{
-		tmp = 1 << 5;
-		tmp = ~tmp;
-		addr_dat &= tmp;
+		tmp = 1 << 5; //mask off lockout enable/disable bit
+		tmp = ~tmp; //create inverse of mask
+		addr_dat &= tmp; //and mask with current bus value to disable lockout without changing other bits.
 	}
 	else
 	{
@@ -991,9 +993,10 @@ int main(int argc, char *argv[])
 {
 	GtkBuilder      *builder;
 	GtkWidget       *window;
-	struct sched_param sp;
-	sp.sched_priority = 50;
-	sched_setscheduler(getpid(), SCHED_FIFO, &sp);
+
+	struct sched_param sp; //scheduler paramerter struct
+	sp.sched_priority = 50; //give max priority
+	sched_setscheduler(getpid(), SCHED_FIFO, &sp); //set to realtime (FIFO) scheduler at max priority. This ensures fast GPIO access
 
 	gtk_init(&argc, &argv);
 
@@ -1095,7 +1098,7 @@ int main(int argc, char *argv[])
 	gen = 1; //enable chip
 	gmode = 0; //global mode disabled -- each channel DAC configured individually
 	neg_pol = 0; //positive polarity
-	int_agnd_en = 1; //enable internal generation of AGND
+	int_agnd_en = 0; //enable internal generation of AGND
 	agnd_trim = AGND_1_63; //set AGND for 1.63V (nominal value)
 	nowlin_mode = NOWLIN_SHORT; //nowlin short mode
 	nowlin_delay = 1; //set Nowlin delay for 2 ns (switch in 1 cap at short mode)
