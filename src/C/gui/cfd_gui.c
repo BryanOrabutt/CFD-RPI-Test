@@ -650,6 +650,8 @@ void on_Configure_Button_clicked()
 
 	addr_dat |= (agnd_trim << 2); //set the AGND trim bits
 	addr_dat |= cfd_pw; //set the CFD pulse width bits
+	addr_dat |= (le_out_en << 6); //set leading edge output enable bit
+
 	if(lockout_mode != LOCKOUT_DISABLED) //set lockout mode bit
 	{
 		addr_dat |= (lockout_mode << 5);
@@ -707,7 +709,7 @@ void on_Configure_Button_clicked()
 		addr_dat |= (1 << 5);
 	}
 	
-	addr_dat |= (le_out_en << 6); //set leading edge output enable bit
+	//addr_dat |= (le_out_en << 6); //set leading edge output enable bit
 
 	set_data(addr_dat);
 	delay_ns(500);
@@ -1027,7 +1029,7 @@ int main(int argc, char *argv[])
 	GMode_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "GMode_CB"));
 	Neg_Pol_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Neg_Pol_CB"));
 	Internal_AGND_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "Internal_AGND_CB"));
-	LE_Out_Enable_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "LE_OUT_ENABLE_CB"));
+	LE_Out_Enable_CB_h = GTK_WIDGET(gtk_builder_get_object(builder, "LE_OUT_ENABLE"));
 
 	Nowlin_Mode_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "Nowlin_Mode_Menu"));
 	Nowlin_Delay_Menu_h = GTK_WIDGET(gtk_builder_get_object(builder, "Nowlin_Delay_Menu"));
@@ -1121,7 +1123,7 @@ int main(int argc, char *argv[])
 	lockout_mode = LOCKOUT_DISABLED; //disable lockout
 	test_point_sel = TP_AVSS; //set test point to AVSS (no test point connected)
 	lockout_dac = 0; //set lockout DAC to 0 (doesnt matter since lockout disabled)
-	le_out_en = 0;
+	le_out_en = 0; //set leading edge outputs disabled initially.
 
 	for(int i = 0; i < CHANNELS; i++)
 	{
